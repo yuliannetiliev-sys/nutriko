@@ -1,0 +1,973 @@
+{
+  "report": {
+    "bucket": "product-images",
+    "totalFiles": 47,
+    "totalBytes": 115055815,
+    "topLevel": {
+      "9": {
+        "count": 3,
+        "bytes": 1780754
+      },
+      "38": {
+        "count": 2,
+        "bytes": 4680670
+      },
+      "articles": {
+        "count": 14,
+        "bytes": 412488
+      },
+      "(root)": {
+        "count": 5,
+        "bytes": 6413501
+      },
+      "baklava-s-shokoladova-zalivka": {
+        "count": 1,
+        "bytes": 5489644
+      },
+      "frenska-selska-torta": {
+        "count": 1,
+        "bytes": 2217917
+      },
+      "hero": {
+        "count": 1,
+        "bytes": 7002885
+      },
+      "kokosova-torta": {
+        "count": 1,
+        "bytes": 5789423
+      },
+      "produkt-g0tbhz": {
+        "count": 2,
+        "bytes": 11972390
+      },
+      "shokoladova-torta-tip-garazh": {
+        "count": 2,
+        "bytes": 13354559
+      },
+      "site": {
+        "count": 8,
+        "bytes": 10853714
+      },
+      "torta-s-shokoladov-krem": {
+        "count": 2,
+        "bytes": 13022819
+      },
+      "torta-tiramisu": {
+        "count": 2,
+        "bytes": 13426033
+      },
+      "vafli-s-shokoladov-palnezh": {
+        "count": 1,
+        "bytes": 5757544
+      },
+      "vafli-sas-fastachen-tahan": {
+        "count": 2,
+        "bytes": 12881474
+      }
+    },
+    "counts": {
+      "products": 39,
+      "productsWithImage": 11,
+      "articles": 14,
+      "articlesWithCover": 14
+    },
+    "orphans": [
+      "site/polezno-hero-v1.webp",
+      "site/polezno-hero-v2.webp",
+      "site/polezno-hero-v3.webp",
+      "torta-s-shokoladov-krem.png"
+    ],
+    "brokenRefs": []
+  },
+  "files": [
+    {
+      "path": "38/2djr9h3c.png",
+      "size": 2274022,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T13:47:18.371Z"
+    },
+    {
+      "path": "38/g78v26j1.png",
+      "size": 2406648,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T13:48:45.134Z"
+    },
+    {
+      "path": "9/41fwbhs3.png",
+      "size": 553229,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T12:32:39.267Z"
+    },
+    {
+      "path": "9/de732qvk.png",
+      "size": 600746,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T12:32:40.722Z"
+    },
+    {
+      "path": "9/tzw5mmey.png",
+      "size": 626779,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T12:32:42.500Z"
+    },
+    {
+      "path": "articles/alergeni-i-obshta-kuhnya-kakvo-tryabva-da-znaesh/cover.webp",
+      "size": 20952,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:36.684Z"
+    },
+    {
+      "path": "articles/bez-dobavena-zahar-ne-oznachava-bez-kalorii/cover.webp",
+      "size": 40340,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:33.316Z"
+    },
+    {
+      "path": "articles/byalata-zahar-zashto-ya-ogranichavame/cover.webp",
+      "size": 29842,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:33.933Z"
+    },
+    {
+      "path": "articles/eritritol-v-desertite/cover.webp",
+      "size": 13084,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:34.499Z"
+    },
+    {
+      "path": "articles/furmi-estestvena-sladost/cover.webp",
+      "size": 35020,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:35.105Z"
+    },
+    {
+      "path": "articles/glikemichen-indeks-i-glikemichen-tovar/cover.webp",
+      "size": 17886,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:35.611Z"
+    },
+    {
+      "path": "articles/iztochnik-na-protein-i-visoko-sadarzhanie-na-protein/cover.webp",
+      "size": 18448,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:32.228Z"
+    },
+    {
+      "path": "articles/kak-da-chetesh-menuto-na-nutriko/cover.webp",
+      "size": 43880,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:30.069Z"
+    },
+    {
+      "path": "articles/kak-izchislyavame-makrosite-v-menyuto/cover.webp",
+      "size": 22604,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:32.743Z"
+    },
+    {
+      "path": "articles/koy-desert-da-izbera-spored-tselta-si/cover.webp",
+      "size": 39252,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:30.973Z"
+    },
+    {
+      "path": "articles/podsladiteli-v-desertite/cover.webp",
+      "size": 29242,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:37.238Z"
+    },
+    {
+      "path": "articles/proteinov-sheyk-ili-desert-koga-koe-e-podhodyashto/cover.webp",
+      "size": 23340,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:38.079Z"
+    },
+    {
+      "path": "articles/zashto-izpolzvame-tahan-yadki-i-istinski-sastavki/cover.webp",
+      "size": 30902,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:36.240Z"
+    },
+    {
+      "path": "articles/zashto-proteinat-e-vazhen-v-desertite/cover.webp",
+      "size": 47696,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:15:31.729Z"
+    },
+    {
+      "path": "baklava-s-shokoladova-zalivka.png",
+      "size": 1344339,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-13T20:49:46.537Z"
+    },
+    {
+      "path": "baklava-s-shokoladova-zalivka/3417ijjl.png",
+      "size": 5489644,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:06.199Z"
+    },
+    {
+      "path": "frenska-selska-torta.png",
+      "size": 1489457,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-13T20:49:47.537Z"
+    },
+    {
+      "path": "frenska-selska-torta/woufpiye.jpg",
+      "size": 2217917,
+      "mimetype": "image/jpeg",
+      "updated_at": "2026-06-16T10:31:04.485Z"
+    },
+    {
+      "path": "hero/z29mbcjw.png",
+      "size": 7002885,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:40:36.897Z"
+    },
+    {
+      "path": "kokosova-torta.jpg",
+      "size": 551835,
+      "mimetype": "image/jpeg",
+      "updated_at": "2026-06-13T20:49:45.756Z"
+    },
+    {
+      "path": "kokosova-torta/mgbm4vlh.png",
+      "size": 5789423,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:30:56.040Z"
+    },
+    {
+      "path": "produkt-g0tbhz/53wseqlz.png",
+      "size": 6304289,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:21.898Z"
+    },
+    {
+      "path": "produkt-g0tbhz/5xtlj663.png",
+      "size": 5668101,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:20.554Z"
+    },
+    {
+      "path": "shokoladova-torta-tip-garazh/eetajnru.png",
+      "size": 6350678,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:30:59.510Z"
+    },
+    {
+      "path": "shokoladova-torta-tip-garazh/uhr5cyhm.png",
+      "size": 7003881,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:30:58.093Z"
+    },
+    {
+      "path": "site/atmosphere-coffee.png",
+      "size": 2427642,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-17T21:47:43.962Z"
+    },
+    {
+      "path": "site/ingredients-coconut.png",
+      "size": 2452044,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-17T21:47:42.707Z"
+    },
+    {
+      "path": "site/ingredients-tahini.png",
+      "size": 2522048,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-17T21:47:41.484Z"
+    },
+    {
+      "path": "site/polezno-hero-v1.webp",
+      "size": 273546,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:55:30.561Z"
+    },
+    {
+      "path": "site/polezno-hero-v2.webp",
+      "size": 298654,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:55:32.187Z"
+    },
+    {
+      "path": "site/polezno-hero-v3.webp",
+      "size": 303646,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:55:32.976Z"
+    },
+    {
+      "path": "site/polezno-hero-v4.webp",
+      "size": 244916,
+      "mimetype": "image/webp",
+      "updated_at": "2026-06-19T21:55:31.496Z"
+    },
+    {
+      "path": "site/texture-slice.png",
+      "size": 2331218,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-17T21:47:28.035Z"
+    },
+    {
+      "path": "torta-s-shokoladov-krem.png",
+      "size": 1491923,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-13T20:49:47.088Z"
+    },
+    {
+      "path": "torta-s-shokoladov-krem/0cikik1b.png",
+      "size": 6324984,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:12.659Z"
+    },
+    {
+      "path": "torta-s-shokoladov-krem/kal64ujs.png",
+      "size": 6697835,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:09.776Z"
+    },
+    {
+      "path": "torta-tiramisu/165u26dp.png",
+      "size": 7223107,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:03.095Z"
+    },
+    {
+      "path": "torta-tiramisu/nsh87x5p.png",
+      "size": 6202926,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:00.978Z"
+    },
+    {
+      "path": "vafli-s-shokoladov-palnezh.png",
+      "size": 1535947,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-13T20:49:48.290Z"
+    },
+    {
+      "path": "vafli-s-shokoladov-palnezh/ktp2bd45.png",
+      "size": 5757544,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:07.858Z"
+    },
+    {
+      "path": "vafli-sas-fastachen-tahan/f9l7nyi1.png",
+      "size": 6369677,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:15.005Z"
+    },
+    {
+      "path": "vafli-sas-fastachen-tahan/m8alj0n7.png",
+      "size": 6511797,
+      "mimetype": "image/png",
+      "updated_at": "2026-06-16T10:31:18.547Z"
+    }
+  ],
+  "referenced": {
+    "kokosova-torta.jpg": [
+      "products#2.image_url",
+      "products#2.image_urls[]"
+    ],
+    "kokosova-torta/mgbm4vlh.png": [
+      "products#2.image_urls[]"
+    ],
+    "shokoladova-torta-tip-garazh/uhr5cyhm.png": [
+      "products#3.image_url",
+      "products#3.image_urls[]"
+    ],
+    "shokoladova-torta-tip-garazh/eetajnru.png": [
+      "products#3.image_urls[]"
+    ],
+    "torta-tiramisu/nsh87x5p.png": [
+      "products#4.image_url",
+      "products#4.image_urls[]"
+    ],
+    "torta-tiramisu/165u26dp.png": [
+      "products#4.image_urls[]"
+    ],
+    "9/41fwbhs3.png": [
+      "products#9.image_url",
+      "products#9.image_urls[]"
+    ],
+    "9/de732qvk.png": [
+      "products#9.image_urls[]"
+    ],
+    "9/tzw5mmey.png": [
+      "products#9.image_urls[]"
+    ],
+    "frenska-selska-torta.png": [
+      "products#12.image_url",
+      "products#12.image_urls[]"
+    ],
+    "frenska-selska-torta/woufpiye.jpg": [
+      "products#12.image_urls[]"
+    ],
+    "baklava-s-shokoladova-zalivka.png": [
+      "products#15.image_url",
+      "products#15.image_urls[]"
+    ],
+    "baklava-s-shokoladova-zalivka/3417ijjl.png": [
+      "products#15.image_urls[]"
+    ],
+    "vafli-s-shokoladov-palnezh.png": [
+      "products#23.image_url",
+      "products#23.image_urls[]"
+    ],
+    "vafli-s-shokoladov-palnezh/ktp2bd45.png": [
+      "products#23.image_urls[]"
+    ],
+    "torta-s-shokoladov-krem/kal64ujs.png": [
+      "products#24.image_url",
+      "products#24.image_urls[]"
+    ],
+    "torta-s-shokoladov-krem/0cikik1b.png": [
+      "products#24.image_urls[]"
+    ],
+    "vafli-sas-fastachen-tahan/f9l7nyi1.png": [
+      "products#25.image_url",
+      "products#25.image_urls[]"
+    ],
+    "vafli-sas-fastachen-tahan/m8alj0n7.png": [
+      "products#25.image_urls[]"
+    ],
+    "produkt-g0tbhz/5xtlj663.png": [
+      "products#26.image_url",
+      "products#26.image_urls[]"
+    ],
+    "produkt-g0tbhz/53wseqlz.png": [
+      "products#26.image_urls[]"
+    ],
+    "38/g78v26j1.png": [
+      "products#38.image_url",
+      "products#38.image_urls[]"
+    ],
+    "38/2djr9h3c.png": [
+      "products#38.image_urls[]"
+    ],
+    "articles/glikemichen-indeks-i-glikemichen-tovar/cover.webp": [
+      "articles#1.cover_image_url"
+    ],
+    "articles/byalata-zahar-zashto-ya-ogranichavame/cover.webp": [
+      "articles#2.cover_image_url"
+    ],
+    "articles/eritritol-v-desertite/cover.webp": [
+      "articles#3.cover_image_url"
+    ],
+    "articles/furmi-estestvena-sladost/cover.webp": [
+      "articles#4.cover_image_url"
+    ],
+    "articles/zashto-proteinat-e-vazhen-v-desertite/cover.webp": [
+      "articles#5.cover_image_url"
+    ],
+    "articles/kak-da-chetesh-menuto-na-nutriko/cover.webp": [
+      "articles#6.cover_image_url"
+    ],
+    "articles/bez-dobavena-zahar-ne-oznachava-bez-kalorii/cover.webp": [
+      "articles#7.cover_image_url"
+    ],
+    "articles/koy-desert-da-izbera-spored-tselta-si/cover.webp": [
+      "articles#8.cover_image_url"
+    ],
+    "articles/alergeni-i-obshta-kuhnya-kakvo-tryabva-da-znaesh/cover.webp": [
+      "articles#9.cover_image_url"
+    ],
+    "articles/kak-izchislyavame-makrosite-v-menyuto/cover.webp": [
+      "articles#10.cover_image_url"
+    ],
+    "articles/podsladiteli-v-desertite/cover.webp": [
+      "articles#11.cover_image_url"
+    ],
+    "articles/zashto-izpolzvame-tahan-yadki-i-istinski-sastavki/cover.webp": [
+      "articles#12.cover_image_url"
+    ],
+    "articles/proteinov-sheyk-ili-desert-koga-koe-e-podhodyashto/cover.webp": [
+      "articles#13.cover_image_url"
+    ],
+    "articles/iztochnik-na-protein-i-visoko-sadarzhanie-na-protein/cover.webp": [
+      "articles#14.cover_image_url"
+    ],
+    "hero/z29mbcjw.png": [
+      "site_settings#1.hero_image_url"
+    ]
+  },
+  "products": [
+    {
+      "id": 2,
+      "slug": "kokosova-torta",
+      "name": "Кокосова торта",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta.jpg",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta.jpg",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta/mgbm4vlh.png"
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "shokoladova-torta-tip-garazh",
+      "name": "Торта \"Гараш\"",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/uhr5cyhm.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/uhr5cyhm.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/eetajnru.png"
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "torta-tiramisu",
+      "name": "Торта Тирамису",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/nsh87x5p.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/nsh87x5p.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/165u26dp.png"
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "makaroni-na-furna",
+      "name": "Макарони на фурна",
+      "category": "друго",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 6,
+      "slug": "biskviti",
+      "name": "Бисквити",
+      "category": "бисквити",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 7,
+      "slug": "ketopitkisoleni",
+      "name": "КетоПиткиСолени",
+      "category": "хляб",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 8,
+      "slug": "krem-maskarpone-s-orehov-blat",
+      "name": "Крем маскарпоне с орехов блат",
+      "category": "крем",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 9,
+      "slug": "halva",
+      "name": "Лешникова Халва",
+      "category": "халва",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/41fwbhs3.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/41fwbhs3.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/de732qvk.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/tzw5mmey.png"
+      ]
+    },
+    {
+      "id": 10,
+      "slug": "torta",
+      "name": "Торта",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 11,
+      "slug": "solen-chiiz-keyk",
+      "name": "Солен чииз кейк",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 12,
+      "slug": "frenska-selska-torta",
+      "name": "Френска Селска торта",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta/woufpiye.jpg"
+      ]
+    },
+    {
+      "id": 13,
+      "slug": "torta-s-krem-tahan-leshnik-i-maskarpone",
+      "name": "Торта с крем тахан лешник  и маскарпоне",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 14,
+      "slug": "brauni-torta",
+      "name": "Брауни Торта",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 15,
+      "slug": "baklava-s-shokoladova-zalivka",
+      "name": "Баклава с шоколадова заливка",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka/3417ijjl.png"
+      ]
+    },
+    {
+      "id": 16,
+      "slug": "brauni-dobre-no-malko-suho",
+      "name": "Брауни добре но малко сухо,",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 17,
+      "slug": "brauni-dobre",
+      "name": "Брауни добре",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 18,
+      "slug": "shokoladov-chiizkeyk",
+      "name": "Шоколадов чиизкейк",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 19,
+      "slug": "byal-shokoladov-krem",
+      "name": "Бял шоколадов крем",
+      "category": "крем",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 20,
+      "slug": "torta-s-byal-krem-orehovi-blatove",
+      "name": "Торта с бял крем орехови блатове",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 21,
+      "slug": "shokolad-za-tsentar-na-brauni",
+      "name": "Шоколад за център на брауни",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 22,
+      "slug": "brauni-s-dobaven-shokolad-ot-gorniya",
+      "name": "Брауни  с добавен шоколад от горния",
+      "category": "торта",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 23,
+      "slug": "vafli-s-shokoladov-palnezh",
+      "name": "Вафли с лешников тахан и шоколад",
+      "category": "вафла",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh/ktp2bd45.png"
+      ]
+    },
+    {
+      "id": 24,
+      "slug": "torta-s-shokoladov-krem",
+      "name": "Торта Шоко Мус",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/kal64ujs.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/kal64ujs.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/0cikik1b.png"
+      ]
+    },
+    {
+      "id": 25,
+      "slug": "vafli-sas-fastachen-tahan",
+      "name": "Вафли с фъстъчен тахан и шоклад",
+      "category": "вафла",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/f9l7nyi1.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/f9l7nyi1.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/m8alj0n7.png"
+      ]
+    },
+    {
+      "id": 26,
+      "slug": "produkt-g0tbhz",
+      "name": "Вафли с тахан Шам Фъстък",
+      "category": "вафла",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/5xtlj663.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/5xtlj663.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/53wseqlz.png"
+      ]
+    },
+    {
+      "id": 27,
+      "slug": "produkt-nxvyyu",
+      "name": "Вафли с Фъстъчен тахан и шоколад (копие)",
+      "category": "вафла",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 28,
+      "slug": "produkt-64vagu",
+      "name": "Вафли със фъстъчен тахан и шоклад (копие)",
+      "category": "вафла",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 29,
+      "slug": "vafli-sham-fastak",
+      "name": "Вафли с Шам фъстък",
+      "category": "вафла",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 30,
+      "slug": "produkt-rjezoe",
+      "name": "Протеинов Шейк Банан",
+      "category": "шейк",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 31,
+      "slug": "produkt-dedtld",
+      "name": "Минерална вода Девин 0.500",
+      "category": "студени напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 32,
+      "slug": "produkt-smdvgy",
+      "name": "Кафе еспресо \"Costa\"",
+      "category": "топли напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 33,
+      "slug": "produkt-z09qz6",
+      "name": "Нов продукт",
+      "category": null,
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 34,
+      "slug": "produkt-zb9b7a",
+      "name": "Минерална вода Девин 1.5",
+      "category": "студени напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 35,
+      "slug": "produkt-k1v0lz",
+      "name": "Капучино",
+      "category": "топли напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 36,
+      "slug": "produkt-0xbdv2",
+      "name": "Чай билков",
+      "category": "топли напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 37,
+      "slug": "produkt-f9otiu",
+      "name": "Инстантно кафе \"Davidoff\"",
+      "category": "топли напитки",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 38,
+      "slug": "produkt-4lzcvy",
+      "name": "Торта \"Гараш\" крем Пистачо",
+      "category": "торта",
+      "archived": false,
+      "image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/g78v26j1.png",
+      "image_urls": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/g78v26j1.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/2djr9h3c.png"
+      ]
+    },
+    {
+      "id": 39,
+      "slug": "produkt-fz55zo",
+      "name": "Нов продукт",
+      "category": null,
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    },
+    {
+      "id": 40,
+      "slug": "produkt-0c6pfc",
+      "name": "Турска Мечта - Turkish Dream",
+      "category": "шейк",
+      "archived": false,
+      "image_url": null,
+      "image_urls": []
+    }
+  ],
+  "articles": [
+    {
+      "id": 1,
+      "slug": "glikemichen-indeks-i-glikemichen-tovar",
+      "title": "Гликемичен индекс и гликемичен товар — каква е разликата",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/glikemichen-indeks-i-glikemichen-tovar/cover.webp"
+    },
+    {
+      "id": 2,
+      "slug": "byalata-zahar-zashto-ya-ogranichavame",
+      "title": "Бялата захар — защо я ограничаваме и какво да гледаш на етикета",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/byalata-zahar-zashto-ya-ogranichavame/cover.webp"
+    },
+    {
+      "id": 3,
+      "slug": "eritritol-v-desertite",
+      "title": "Еритритол — какво е, защо го използваме и какво казват изследванията",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/eritritol-v-desertite/cover.webp"
+    },
+    {
+      "id": 4,
+      "slug": "furmi-estestvena-sladost",
+      "title": "Фурми — естествена сладост, фибри и гликемичен отговор",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/furmi-estestvena-sladost/cover.webp"
+    },
+    {
+      "id": 5,
+      "slug": "zashto-proteinat-e-vazhen-v-desertite",
+      "title": "Защо протеинът е важен в един десерт",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/zashto-proteinat-e-vazhen-v-desertite/cover.webp"
+    },
+    {
+      "id": 6,
+      "slug": "kak-da-chetesh-menuto-na-nutriko",
+      "title": "Как да четеш менюто на Нутрико",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/kak-da-chetesh-menuto-na-nutriko/cover.webp"
+    },
+    {
+      "id": 7,
+      "slug": "bez-dobavena-zahar-ne-oznachava-bez-kalorii",
+      "title": "Без добавена захар не означава без калории",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/bez-dobavena-zahar-ne-oznachava-bez-kalorii/cover.webp"
+    },
+    {
+      "id": 8,
+      "slug": "koy-desert-da-izbera-spored-tselta-si",
+      "title": "Кой десерт да избера според целта си",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/koy-desert-da-izbera-spored-tselta-si/cover.webp"
+    },
+    {
+      "id": 9,
+      "slug": "alergeni-i-obshta-kuhnya-kakvo-tryabva-da-znaesh",
+      "title": "Алергени и обща кухня — какво трябва да знаеш",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/alergeni-i-obshta-kuhnya-kakvo-tryabva-da-znaesh/cover.webp"
+    },
+    {
+      "id": 10,
+      "slug": "kak-izchislyavame-makrosite-v-menyuto",
+      "title": "Как изчисляваме макросите и защо са ориентировъчни",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/kak-izchislyavame-makrosite-v-menyuto/cover.webp"
+    },
+    {
+      "id": 11,
+      "slug": "podsladiteli-v-desertite",
+      "title": "Подсладителите в Нутрико: еритритол, фурми, пчелен мед и други варианти",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/podsladiteli-v-desertite/cover.webp"
+    },
+    {
+      "id": 12,
+      "slug": "zashto-izpolzvame-tahan-yadki-i-istinski-sastavki",
+      "title": "Защо използваме тахан, ядки и истински съставки",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/zashto-izpolzvame-tahan-yadki-i-istinski-sastavki/cover.webp"
+    },
+    {
+      "id": 13,
+      "slug": "proteinov-sheyk-ili-desert-koga-koe-e-podhodyashto",
+      "title": "Протеинов шейк или десерт — кога кое е по-подходящо",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/proteinov-sheyk-ili-desert-koga-koe-e-podhodyashto/cover.webp"
+    },
+    {
+      "id": 14,
+      "slug": "iztochnik-na-protein-i-visoko-sadarzhanie-na-protein",
+      "title": "Какво означава източник на протеин и високо съдържание на протеин",
+      "cover_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/articles/iztochnik-na-protein-i-visoko-sadarzhanie-na-protein/cover.webp"
+    }
+  ],
+  "siteContent": [],
+  "siteSettings": [
+    {
+      "id": 1,
+      "hero_image_url": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/hero/z29mbcjw.png"
+    }
+  ]
+}

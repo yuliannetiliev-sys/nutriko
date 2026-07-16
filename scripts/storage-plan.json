@@ -1,0 +1,385 @@
+{
+  "moves": [
+    {
+      "from": "kokosova-torta.jpg",
+      "to": "products/2-kokosova-torta/01.jpg",
+      "reason": "продукт #2 kokosova-torta"
+    },
+    {
+      "from": "kokosova-torta/mgbm4vlh.png",
+      "to": "products/2-kokosova-torta/02.png",
+      "reason": "продукт #2 kokosova-torta"
+    },
+    {
+      "from": "shokoladova-torta-tip-garazh/uhr5cyhm.png",
+      "to": "products/3-shokoladova-torta-tip-garazh/01.png",
+      "reason": "продукт #3 shokoladova-torta-tip-garazh"
+    },
+    {
+      "from": "shokoladova-torta-tip-garazh/eetajnru.png",
+      "to": "products/3-shokoladova-torta-tip-garazh/02.png",
+      "reason": "продукт #3 shokoladova-torta-tip-garazh"
+    },
+    {
+      "from": "torta-tiramisu/nsh87x5p.png",
+      "to": "products/4-torta-tiramisu/01.png",
+      "reason": "продукт #4 torta-tiramisu"
+    },
+    {
+      "from": "torta-tiramisu/165u26dp.png",
+      "to": "products/4-torta-tiramisu/02.png",
+      "reason": "продукт #4 torta-tiramisu"
+    },
+    {
+      "from": "9/41fwbhs3.png",
+      "to": "products/9-halva/01.png",
+      "reason": "продукт #9 halva"
+    },
+    {
+      "from": "9/de732qvk.png",
+      "to": "products/9-halva/02.png",
+      "reason": "продукт #9 halva"
+    },
+    {
+      "from": "9/tzw5mmey.png",
+      "to": "products/9-halva/03.png",
+      "reason": "продукт #9 halva"
+    },
+    {
+      "from": "frenska-selska-torta.png",
+      "to": "products/12-frenska-selska-torta/01.png",
+      "reason": "продукт #12 frenska-selska-torta"
+    },
+    {
+      "from": "frenska-selska-torta/woufpiye.jpg",
+      "to": "products/12-frenska-selska-torta/02.jpg",
+      "reason": "продукт #12 frenska-selska-torta"
+    },
+    {
+      "from": "baklava-s-shokoladova-zalivka.png",
+      "to": "products/15-baklava-s-shokoladova-zalivka/01.png",
+      "reason": "продукт #15 baklava-s-shokoladova-zalivka"
+    },
+    {
+      "from": "baklava-s-shokoladova-zalivka/3417ijjl.png",
+      "to": "products/15-baklava-s-shokoladova-zalivka/02.png",
+      "reason": "продукт #15 baklava-s-shokoladova-zalivka"
+    },
+    {
+      "from": "vafli-s-shokoladov-palnezh.png",
+      "to": "products/23-vafli-s-shokoladov-palnezh/01.png",
+      "reason": "продукт #23 vafli-s-shokoladov-palnezh"
+    },
+    {
+      "from": "vafli-s-shokoladov-palnezh/ktp2bd45.png",
+      "to": "products/23-vafli-s-shokoladov-palnezh/02.png",
+      "reason": "продукт #23 vafli-s-shokoladov-palnezh"
+    },
+    {
+      "from": "torta-s-shokoladov-krem/kal64ujs.png",
+      "to": "products/24-torta-s-shokoladov-krem/01.png",
+      "reason": "продукт #24 torta-s-shokoladov-krem"
+    },
+    {
+      "from": "torta-s-shokoladov-krem/0cikik1b.png",
+      "to": "products/24-torta-s-shokoladov-krem/02.png",
+      "reason": "продукт #24 torta-s-shokoladov-krem"
+    },
+    {
+      "from": "vafli-sas-fastachen-tahan/f9l7nyi1.png",
+      "to": "products/25-vafli-sas-fastachen-tahan/01.png",
+      "reason": "продукт #25 vafli-sas-fastachen-tahan"
+    },
+    {
+      "from": "vafli-sas-fastachen-tahan/m8alj0n7.png",
+      "to": "products/25-vafli-sas-fastachen-tahan/02.png",
+      "reason": "продукт #25 vafli-sas-fastachen-tahan"
+    },
+    {
+      "from": "produkt-g0tbhz/5xtlj663.png",
+      "to": "products/26-produkt-g0tbhz/01.png",
+      "reason": "продукт #26 produkt-g0tbhz"
+    },
+    {
+      "from": "produkt-g0tbhz/53wseqlz.png",
+      "to": "products/26-produkt-g0tbhz/02.png",
+      "reason": "продукт #26 produkt-g0tbhz"
+    },
+    {
+      "from": "38/g78v26j1.png",
+      "to": "products/38-produkt-4lzcvy/01.png",
+      "reason": "продукт #38 produkt-4lzcvy"
+    },
+    {
+      "from": "38/2djr9h3c.png",
+      "to": "products/38-produkt-4lzcvy/02.png",
+      "reason": "продукт #38 produkt-4lzcvy"
+    },
+    {
+      "from": "hero/z29mbcjw.png",
+      "to": "site/home-hero.png",
+      "reason": "начален hero (site_settings)"
+    },
+    {
+      "from": "site/polezno-hero-v4.webp",
+      "to": "site/polezno-hero.webp",
+      "reason": "polezno hero (default в lib/content.ts)"
+    }
+  ],
+  "dbUpdates": [
+    {
+      "table": "products",
+      "id": 2,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta.jpg",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/2-kokosova-torta/01.jpg"
+    },
+    {
+      "table": "products",
+      "id": 2,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta.jpg",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/kokosova-torta/mgbm4vlh.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/2-kokosova-torta/01.jpg",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/2-kokosova-torta/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 3,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/uhr5cyhm.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/3-shokoladova-torta-tip-garazh/01.png"
+    },
+    {
+      "table": "products",
+      "id": 3,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/uhr5cyhm.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/shokoladova-torta-tip-garazh/eetajnru.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/3-shokoladova-torta-tip-garazh/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/3-shokoladova-torta-tip-garazh/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 4,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/nsh87x5p.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/4-torta-tiramisu/01.png"
+    },
+    {
+      "table": "products",
+      "id": 4,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/nsh87x5p.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-tiramisu/165u26dp.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/4-torta-tiramisu/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/4-torta-tiramisu/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 9,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/41fwbhs3.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/9-halva/01.png"
+    },
+    {
+      "table": "products",
+      "id": 9,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/41fwbhs3.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/de732qvk.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/9/tzw5mmey.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/9-halva/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/9-halva/02.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/9-halva/03.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 12,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/12-frenska-selska-torta/01.png"
+    },
+    {
+      "table": "products",
+      "id": 12,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/frenska-selska-torta/woufpiye.jpg"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/12-frenska-selska-torta/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/12-frenska-selska-torta/02.jpg"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 15,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/15-baklava-s-shokoladova-zalivka/01.png"
+    },
+    {
+      "table": "products",
+      "id": 15,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/baklava-s-shokoladova-zalivka/3417ijjl.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/15-baklava-s-shokoladova-zalivka/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/15-baklava-s-shokoladova-zalivka/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 23,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/23-vafli-s-shokoladov-palnezh/01.png"
+    },
+    {
+      "table": "products",
+      "id": 23,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-s-shokoladov-palnezh/ktp2bd45.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/23-vafli-s-shokoladov-palnezh/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/23-vafli-s-shokoladov-palnezh/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 24,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/kal64ujs.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/24-torta-s-shokoladov-krem/01.png"
+    },
+    {
+      "table": "products",
+      "id": 24,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/kal64ujs.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-s-shokoladov-krem/0cikik1b.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/24-torta-s-shokoladov-krem/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/24-torta-s-shokoladov-krem/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 25,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/f9l7nyi1.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/25-vafli-sas-fastachen-tahan/01.png"
+    },
+    {
+      "table": "products",
+      "id": 25,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/f9l7nyi1.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/vafli-sas-fastachen-tahan/m8alj0n7.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/25-vafli-sas-fastachen-tahan/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/25-vafli-sas-fastachen-tahan/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 26,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/5xtlj663.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/26-produkt-g0tbhz/01.png"
+    },
+    {
+      "table": "products",
+      "id": 26,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/5xtlj663.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/produkt-g0tbhz/53wseqlz.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/26-produkt-g0tbhz/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/26-produkt-g0tbhz/02.png"
+      ]
+    },
+    {
+      "table": "products",
+      "id": 38,
+      "field": "image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/g78v26j1.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/38-produkt-4lzcvy/01.png"
+    },
+    {
+      "table": "products",
+      "id": 38,
+      "field": "image_urls",
+      "oldVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/g78v26j1.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/38/2djr9h3c.png"
+      ],
+      "newVal": [
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/38-produkt-4lzcvy/01.png",
+        "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/products/38-produkt-4lzcvy/02.png"
+      ]
+    },
+    {
+      "table": "site_settings",
+      "id": 1,
+      "field": "hero_image_url",
+      "oldVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/hero/z29mbcjw.png",
+      "newVal": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/site/home-hero.png"
+    }
+  ],
+  "codeEdits": [
+    {
+      "file": "lib/content.ts",
+      "old": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/site/polezno-hero-v4.webp",
+      "new": "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/site/polezno-hero.webp"
+    }
+  ],
+  "deletes": [
+    {
+      "path": "site/polezno-hero-v1.webp",
+      "reason": "нереферирано (стара версия/дубликат)"
+    },
+    {
+      "path": "site/polezno-hero-v2.webp",
+      "reason": "нереферирано (стара версия/дубликат)"
+    },
+    {
+      "path": "site/polezno-hero-v3.webp",
+      "reason": "нереферирано (стара версия/дубликат)"
+    },
+    {
+      "path": "torta-s-shokoladov-krem.png",
+      "reason": "нереферирано (стара версия/дубликат)"
+    }
+  ]
+}
