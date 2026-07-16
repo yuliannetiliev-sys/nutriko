@@ -9,8 +9,9 @@ const URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://xrdanumtjbrpkrjtvyj
 const ANON =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "sb_publishable_FFbgzGOpCgPastoJ57Ztig_6kIXFTvE";
 
-// Единствен админ — RLS политиките и проверките са вързани за този имейл.
-export const ADMIN_EMAIL = "yulian.net.iliev@gmail.com";
+// Админите на сайта. Списъкът се дублира в public.is_admin() в базата —
+// при нов админ обнови и двете места (+ middleware.ts).
+export const ADMIN_EMAILS = ["yulian.net.iliev@gmail.com", "samuil.slavev@gmail.com"];
 
 // Анонимен клиент (без сесия) — за публичните четения и контактната форма.
 export function db() {
@@ -44,7 +45,9 @@ export async function getUser() {
 
 export async function requireAdmin() {
   const user = await getUser();
-  if (!user || user.email !== ADMIN_EMAIL) throw new Error("Няма достъп. Влез в админа.");
+  if (!user?.email || !ADMIN_EMAILS.includes(user.email)) {
+    throw new Error("Няма достъп. Влез в админа.");
+  }
   return user;
 }
 

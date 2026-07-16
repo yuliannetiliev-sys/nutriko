@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const ADMIN_EMAIL = "yulian.net.iliev@gmail.com";
+// Дублира се в lib/supabase.ts (ADMIN_EMAILS) и public.is_admin() в базата.
+const ADMIN_EMAILS = ["yulian.net.iliev@gmail.com", "samuil.slavev@gmail.com"];
 const ADMIN_PATHS = ["/products", "/ingredients", "/categories", "/site", "/articles", "/content"];
 
 export async function middleware(req: NextRequest) {
@@ -29,7 +30,7 @@ export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const needsAdmin = ADMIN_PATHS.some((p) => path === p || path.startsWith(p + "/"));
 
-  if (needsAdmin && (!user || user.email !== ADMIN_EMAIL)) {
+  if (needsAdmin && (!user?.email || !ADMIN_EMAILS.includes(user.email))) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
