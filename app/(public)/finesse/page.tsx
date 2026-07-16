@@ -14,11 +14,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Снимки на десертите (сменят се при нови кадри от събитието)
+// Снимки на десертите — реалните чашки от събитието (Higgsfield обработка)
 const IMG = {
-  kokosova: null as string | null, // чака снимка
+  kokosova:
+    "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/events/finesse/kokosova.webp" as string | null,
   kremaMus:
-    "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/torta-krema-mus/piece.webp",
+    "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/events/finesse/krema-mus.webp",
 };
 
 type Dessert = {
