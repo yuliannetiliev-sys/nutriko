@@ -140,8 +140,14 @@ function CheckItem({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default async function FinessePage() {
+export default async function FinessePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ rezultati?: string }>;
+}) {
   const votes = await getEventVotes("finesse");
+  // Скрит режим „наблюдение": /finesse?rezultati — резултати без гласуване
+  const showResults = (await searchParams).rezultati !== undefined;
 
   return (
     <div className="pb-16">
@@ -267,7 +273,7 @@ export default async function FinessePage() {
           Кой десерт спечели сърцето ти?
         </h2>
         <p className="mb-5 mt-2 text-muted">Гласът ти помага да изберем какво влиза в менюто.</p>
-        <FinessePoll initial={votes} />
+        <FinessePoll initial={votes} showResults={showResults} />
       </section>
 
       {/* ПОЗДРАВ КЪМ FINESSE */}

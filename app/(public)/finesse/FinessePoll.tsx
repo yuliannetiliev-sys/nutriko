@@ -19,7 +19,14 @@ const OPTIONS = [
   },
 ] as const;
 
-export default function FinessePoll({ initial }: { initial: Record<string, number> }) {
+export default function FinessePoll({
+  initial,
+  showResults = false,
+}: {
+  initial: Record<string, number>;
+  // Режим „наблюдение" (?rezultati) — показва резултатите без гласуване
+  showResults?: boolean;
+}) {
   const [counts, setCounts] = useState(initial);
   const [voted, setVoted] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -45,6 +52,40 @@ export default function FinessePoll({ initial }: { initial: Record<string, numbe
   }
 
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
+
+  // Режим „наблюдение": директно резултатите, с бройки, без гласуване
+  if (showResults) {
+    return (
+      <div className="rounded-2xl border border-brand/15 bg-white p-5">
+        <p className="mb-4 text-sm font-medium text-brand-600">
+          Резултати на живо · общо {total} {total === 1 ? "глас" : "гласа"}
+        </p>
+        <div className="space-y-4">
+          {OPTIONS.map((o) => {
+            const n = counts[o.key] ?? 0;
+            const pct = total > 0 ? Math.round((n / total) * 100) : 0;
+            return (
+              <div key={o.key}>
+                <div className="mb-1 flex items-center justify-between text-sm">
+                  <span className="text-ink">{o.label}</span>
+                  <span className="font-medium tabular-nums text-ink">
+                    {n} {n === 1 ? "глас" : "гласа"} · {pct}%
+                  </span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-brand-50">
+                  <div
+                    className="h-full rounded-full bg-brand transition-all duration-700"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-4 text-xs text-muted">Обнови страницата за най-новите гласове.</p>
+      </div>
+    );
+  }
 
   if (!voted) {
     return (
@@ -75,7 +116,11 @@ export default function FinessePoll({ initial }: { initial: Record<string, numbe
     <div className="rounded-2xl border border-brand/15 bg-white p-5">
       <p className="mb-4 text-sm font-medium text-brand-600">
         Благодарим ти!{" "}
-        {total === 1 ? "Ти си първият гласувал." : `Ето какво избраха ${total} гости досега:`}
+        {total === 1
+          ? "Ти си първият гласувал."
+          : total > 1
+            ? `Ето какво избраха ${total} гости досега:`
+            : ""}
       </p>
       <div className="space-y-4">
         {OPTIONS.map((o) => {
