@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { submitEventVote } from "@/app/actions";
 
 const LS_KEY = "nutriko-finesse-vote";
 
 const OPTIONS = [
-  { key: "kokosova", label: "Кокосова торта", emoji: "🥥" },
-  { key: "krema-mus", label: "Торта Крема Мус", emoji: "🍫" },
+  {
+    key: "kokosova",
+    label: "Кокосовият десерт",
+    img: "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/events/finesse/kokosova.webp",
+  },
+  {
+    key: "krema-mus",
+    label: "Крема Мус",
+    img: "https://xrdanumtjbrpkrjtvyjx.supabase.co/storage/v1/object/public/product-images/events/finesse/krema-mus.webp",
+  },
 ] as const;
 
 export default function FinessePoll({ initial }: { initial: Record<string, number> }) {
@@ -45,13 +54,15 @@ export default function FinessePoll({ initial }: { initial: Record<string, numbe
             key={o.key}
             onClick={() => vote(o.key)}
             disabled={pending}
-            className="group flex items-center justify-between gap-3 rounded-2xl border border-brand/20 bg-white px-5 py-4 text-left transition-all hover:border-brand hover:shadow-md disabled:opacity-60"
+            className="group flex items-center justify-between gap-3 rounded-2xl border border-brand/20 bg-white p-3 text-left transition-all hover:border-brand hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:opacity-60"
           >
             <span className="flex items-center gap-3">
-              <span className="text-3xl">{o.emoji}</span>
+              <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-brand-50">
+                <Image src={o.img} alt="" fill sizes="56px" className="object-cover" />
+              </span>
               <span className="font-medium text-ink">{o.label}</span>
             </span>
-            <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-600 transition-colors group-hover:bg-brand group-hover:text-cream">
+            <span className="mr-1 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition-colors group-hover:bg-brand group-hover:text-cream">
               {pending ? "…" : "Гласувай"}
             </span>
           </button>
@@ -63,8 +74,8 @@ export default function FinessePoll({ initial }: { initial: Record<string, numbe
   return (
     <div className="rounded-2xl border border-brand/15 bg-white p-5">
       <p className="mb-4 text-sm font-medium text-brand-600">
-        Благодарим ти! 💚{" "}
-        {total === 1 ? "Ти си първият гласувал! 🥇" : `Ето какво избраха ${total} гости досега:`}
+        Благодарим ти!{" "}
+        {total === 1 ? "Ти си първият гласувал." : `Ето какво избраха ${total} гости досега:`}
       </p>
       <div className="space-y-4">
         {OPTIONS.map((o) => {
@@ -75,9 +86,9 @@ export default function FinessePoll({ initial }: { initial: Record<string, numbe
             <div key={o.key}>
               <div className="mb-1 flex items-center justify-between text-sm">
                 <span className={mine ? "font-semibold text-ink" : "text-muted"}>
-                  {o.emoji} {o.label} {mine && "· твоят глас ✓"}
+                  {o.label} {mine && "· твоят глас ✓"}
                 </span>
-                <span className="tabular-nums font-medium text-ink">{pct}%</span>
+                <span className="font-medium tabular-nums text-ink">{pct}%</span>
               </div>
               <div className="h-2.5 overflow-hidden rounded-full bg-brand-50">
                 <div
