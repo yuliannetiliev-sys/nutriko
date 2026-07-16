@@ -341,6 +341,34 @@ export async function deleteIngredient(id: number): Promise<{ ok: boolean; error
   return { ok: true };
 }
 
+// ---------- Събития (публични QR страници) ----------
+
+// Позволени анкети и опции — сървърна валидация, за да не влиза боклук от публичната страница.
+const EVENT_POLLS: Record<string, readonly string[]> = {
+  finesse: ["kokosova", "krema-mus"],
+};
+
+export async function getEventVotes(event: string): Promise<Record<string, number>> {
+  const options = EVENT_POLLS[event];
+  if (!options) return {};
+  const supabase = db();
+  const { data } = await supabase.from("event_votes").select("choice").eq("event", event);
+  const counts: Record<string, number> = Object.fromEntries(options.map((o) => [o, 0]));
+  for (const r of data ?? []) if (r.choice in counts) counts[r.choice]++;
+  return counts;
+}
+
+export async function submitEventVote(
+  event: string,
+  choice: string
+): Promise<{ ok: boolean; counts: Record<string, number> }> {
+  const options = EVENT_POLLS[event];
+  if (!options || !options.includes(choice)) return { ok: false, counts: {} };
+  const supabase = db();
+  const { error } = await supabase.from("event_votes").insert({ event, choice });
+  return { ok: !error, counts: await getEventVotes(event) };
+}
+
 // ---------- Настройки (админ) ----------
 
 export type SiteSettingsPayload = {
