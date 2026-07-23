@@ -5,7 +5,8 @@
 
 **Продукция:** https://nutriko.fit · Vercel проект `nutrico` · Supabase `nutrico` (`xrdanumtjbrpkrjtvyjx`)
 **GitHub (private):** https://github.com/yuliannetiliev-sys/nutriko · клон `main` · remote `origin`
-**Деплой:** `npx vercel --prod --yes` от папката на проекта (билд: `npm run build`). ⚠️ Vercel Git интеграция НЕ е свързана — деплоят остава ръчен през CLI (пушът в GitHub не деплойва).
+**Деплой:** `npx vercel --prod --yes` от папката на проекта (билд: `npm run build`). ⚠️ Vercel Git интеграция НЕ е свързана (съзнателно — Вариант Б, 2026-07-17) — деплоят е ръчен през CLI, пушът в GitHub НЕ деплойва.
+**Преглед преди живо (правило):** за всяка видима промяна първо **preview деплой** (`npx vercel` БЕЗ `--prod`) → temp линк за одобрение от Юлиан → чак след „ок" → `--prod` на nutriko.fit. Директно на живо само при изрично „пускай директно".
 
 ---
 
