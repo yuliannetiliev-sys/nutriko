@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Нутрико (nutriko.fit)
 
-## Getting Started
+Протеинова сладкарница в Търговище — публичен сайт + QR меню + вътрешен админ калкулатор
+за рецепти, себестойност, макроси и гликемичен товар. Next.js + Supabase, деплой на Vercel.
 
-First, run the development server:
+> **Източникът на истината за прогреса е [`PROJECT_LOG.md`](./PROJECT_LOG.md)** — чети го първо.
+> Този README е само за вдигане на проекта на нова машина.
+
+## Стек
+
+- **Next.js 16** (App Router) + **React 19** + **Tailwind v4**
+- **Supabase** (Postgres + Auth + Storage) през `@supabase/ssr`
+- **Node 24+** (разработвано на v24)
+- Деплой: **Vercel** (CLI)
+
+> ⚠️ Виж [`AGENTS.md`](./AGENTS.md) — това е персонализирана версия на Next.js; при съмнение
+> чети `node_modules/next/dist/docs/` вместо да разчиташ на памет.
+
+## Вдигане на нова машина
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <this-repo-url> nutrico
+cd nutrico
+npm install
+# създай .env.local с променливите от таблицата долу
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment променливи (`.env.local`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`.env.local` **не е в git** (пази тайните). На нова машина го създаваш наново:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Променлива | Тайна? | Откъде |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | не (публична) | Supabase → Project Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | не (публична, RLS пази данните) | Supabase → API → publishable/anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | **ДА — никога в git** | Supabase → API → service_role (`sb_secret_…`). Само за admin скриптове/качване в Storage |
+| `RESEND_API_KEY` | **ДА — никога в git** | Resend → API Keys (ключ `nutrico-site`) |
 
-## Learn More
+Публичните две имат fallback в кода, така че сайтът тръгва и без тях; тайните две трябват
+за качване на снимки (`scripts/`) и за имейл известията от контактната форма.
 
-To learn more about Next.js, take a look at the following resources:
+## Полезни команди
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev               # локална разработка
+npm run build             # production билд (минава и типовете)
+npx vercel --prod --yes   # деплой към production (nutriko.fit)
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Структура (накратко)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/(public)/` — публичен сайт (меню, полезно, алергени, събития)
+- `app/(admin)/` — админ панел (продукти, съставки, статии, текстове, настройки) — зад Supabase Auth
+- `lib/` — данни, калкулатор (`calc.ts`), Supabase клиенти, помощници
+- `scripts/` — еднократни помощни скриптове (Storage, инвентар)
+- `PROJECT_LOG.md` — работен дневник + предстоящо + конвенции
