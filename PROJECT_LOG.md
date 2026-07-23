@@ -25,6 +25,7 @@
 ## 📖 Дневник
 
 ### 2026-07-17
+- **`middleware.ts` → `proxy.ts`** (Next 16 преименува конвенцията, махва deprecation warning-а): функцията `middleware` → `proxy`, същата логика (пази 6-те админ рута преди рендер), `config`/`matcher` непроменени. Прочетена официалната дока (`node_modules/next/dist/docs/.../proxy.md`) преди смяната. **Проверено ЛОКАЛНО** (dev сървър): warning-ът изчезна, логовете показват `proxy.ts`, `/products` невлязъл → redirect към `/login` ✓, нула конзолни грешки. ⏳ НЕ е още на живо — Vercel токенът изтече (иска `vercel login`); ще мине през preview → одобрение → prod.
 - **GitHub private репо** — https://github.com/yuliannetiliev-sys/nutriko (клон `main`, remote `origin`). Направено „по всички правила": `.gitignore` покрива `node_modules`/`.next`/`.env*`/`.vercel`/build; историята сканирана — нула тайни (`.env.local` с `SUPABASE_SERVICE_ROLE_KEY`/`RESEND_API_KEY` НИКОГА не влиза); добавен README със setup за нова машина (env имена + команди). Клонът преименуван `master` → `main`. **Работен поток занапред: `git push` след всяка сесия** (деплоят е отделен — ръчен `vercel --prod`). Цел: работа и от втори лаптоп (`git clone` + създаваш `.env.local` наново от Supabase/Resend).
 
 ### 2026-07-16

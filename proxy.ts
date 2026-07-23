@@ -5,7 +5,8 @@ import { createServerClient } from "@supabase/ssr";
 const ADMIN_EMAILS = ["yulian.net.iliev@gmail.com", "samuil.slavev@gmail.com"];
 const ADMIN_PATHS = ["/products", "/ingredients", "/categories", "/site", "/articles", "/content"];
 
-export async function middleware(req: NextRequest) {
+// Next 16 преименува „middleware" → „proxy" (същата логика: пази админ рутовете преди рендер).
+export async function proxy(req: NextRequest) {
   let res = NextResponse.next({ request: req });
 
   const supabase = createServerClient(
