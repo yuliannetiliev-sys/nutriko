@@ -4,7 +4,8 @@
 > Най-новото е най-отгоре в „Дневник". Свършеното от „Предстои" се мести в „Дневник" с дата.
 
 **Продукция:** https://nutriko.fit · Vercel проект `nutrico` · Supabase `nutrico` (`xrdanumtjbrpkrjtvyjx`)
-**Деплой:** `npx vercel --prod --yes` от папката на проекта (билд: `npm run build`)
+**GitHub (private):** https://github.com/yuliannetiliev-sys/nutriko · клон `main` · remote `origin`
+**Деплой:** `npx vercel --prod --yes` от папката на проекта (билд: `npm run build`). ⚠️ Vercel Git интеграция НЕ е свързана — деплоят остава ръчен през CLI (пушът в GitHub не деплойва).
 
 ---
 
@@ -17,11 +18,13 @@
 - [ ] **Крема Мус — още кадри?** — сурови 2.jpg / 4.jpg / 5.jpg чакат в папката, ако искаме трети кадър в галерията
 - [ ] **Facebook/Instagram** — насрочване на стартовия пакет в Business Suite Planner; Reels; покани към приятели (pre-launch набиране на последователи)
 - [ ] **Останали съставки без цена** — 145 бр. чакат цени в админа (за пълна себестойност на рецептите)
-- [ ] **GitHub резервно копие** — частно репо `nutrico` под `yuliannetiliev-sys` (там са само apex-cg и apex-landing) + remote + push; БЕЗ Vercel Git интеграция (деплоят остава през CLI). Отложено от Юлиан за по-късно (2026-07-16)
 
 ---
 
 ## 📖 Дневник
+
+### 2026-07-17
+- **GitHub private репо** — https://github.com/yuliannetiliev-sys/nutriko (клон `main`, remote `origin`). Направено „по всички правила": `.gitignore` покрива `node_modules`/`.next`/`.env*`/`.vercel`/build; историята сканирана — нула тайни (`.env.local` с `SUPABASE_SERVICE_ROLE_KEY`/`RESEND_API_KEY` НИКОГА не влиза); добавен README със setup за нова машина (env имена + команди). Клонът преименуван `master` → `main`. **Работен поток занапред: `git push` след всяка сесия** (деплоят е отделен — ръчен `vercel --prod`). Цел: работа и от втори лаптоп (`git clone` + създаваш `.env.local` наново от Supabase/Resend).
 
 ### 2026-07-16
 - **Мулти-админ (втори администратор — Самуил, samuil.slavev@gmail.com, пълен достъп)**: нова функция `public.is_admin()` (централен списък имейли) + 10-те RLS политики пренасочени към нея; в кода `ADMIN_EMAIL` → `ADMIN_EMAILS` (`lib/supabase.ts` + `middleware.ts`). **Нов админ занапред = имейл на 3 места**: `is_admin()` (SQL), `ADMIN_EMAILS` ×2 (код) + акаунт от Supabase Dashboard → Authentication → Add user. Акаунтът на Самуил се създава ръчно от Юлиан в Dashboard-а.
