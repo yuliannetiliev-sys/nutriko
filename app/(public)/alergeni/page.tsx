@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     url: "/alergeni",
     title: "Алергени · Нутрико",
     description: "14-те официални алергена (Регламент ЕС 1169/2011), отговарящи на номерата в менюто.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Нутрико" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Нутрико" }],
   },
 };
 

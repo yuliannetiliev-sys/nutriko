@@ -46,7 +46,7 @@ export const metadata: Metadata = {
       "Протеинови торти, вафли, халва и шейкове с тахан — без добавена захар. По-здравословното изкушение с истински макроси.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og.jpg",
         width: 1200,
         height: 630,
         alt: "Нутрико — протеинова сладкарница без захар",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Нутрико — протеинова сладкарница без захар",
     description: "Протеинови десерти без добавена захар, с истински макроси.",
-    images: ["/opengraph-image"],
+    images: ["/og.jpg"],
   },
   robots: { index: true, follow: true },
   verification: { google: "gxtor0ZFCV-xxAJZyDnqokeRu7iEk9Ai_dMmMDDXHHc" },

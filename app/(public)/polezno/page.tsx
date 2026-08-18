@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: "/polezno",
     title: "Полезно · Нутрико",
     description: "Протеин, макроси, подсладители, гликемичен товар и реални съставки — на ясен език.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Нутрико" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Нутрико" }],
   },
 };
 

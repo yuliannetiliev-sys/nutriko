@@ -27,7 +27,7 @@ export async function generateMetadata({
       url: `/polezno/${a.slug}`,
       title: `${seoTitle} · Нутрико`,
       description: desc,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Нутрико" }],
+      images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Нутрико" }],
     },
   };
 }
@@ -65,7 +65,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     "@type": "Article",
     headline: a.title,
     ...(desc ? { description: desc } : {}),
-    image: `${SITE_URL}/opengraph-image`,
+    image: `${SITE_URL}/og.jpg`,
     mainEntityOfPage: url,
     author: { "@type": "Organization", name: "Нутрико" },
     publisher: { "@type": "Organization", name: "Нутрико" },

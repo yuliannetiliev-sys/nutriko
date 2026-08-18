@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     url: "/",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Нутрико" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Нутрико" }],
   },
 };
 

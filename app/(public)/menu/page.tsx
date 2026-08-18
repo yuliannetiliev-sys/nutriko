@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Меню · Нутрико",
     description:
       "Протеинови торти, вафли, халва и шейкове без добавена захар — с макроси, грамажи и цени.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Нутрико" }],
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Нутрико" }],
   },
 };
 
