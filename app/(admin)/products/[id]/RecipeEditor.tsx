@@ -12,6 +12,7 @@ import {
   uploadProductImage,
   type SavePayload,
 } from "@/app/actions";
+import { slugify } from "@/lib/slug";
 import { compressImage } from "@/lib/compressImage";
 
 type Row = { ingredient: Ingredient; qty: number };
@@ -45,6 +46,13 @@ export default function RecipeEditor({
   const [err, setErr] = useState<string | null>(null);
 
   const [name, setName] = useState(product.name);
+  // Адресът следва името, докато продуктът НЕ е публикуван — тогава още няма
+  // чужди линкове, които да се счупят. Публикуван веднъж, той се заковава и се
+  // сменя само ръчно. Същото важи и щом човек сам пипне полето.
+  const [slug, setSlug] = useState(product.slug);
+  const [slugTouched, setSlugTouched] = useState(false);
+  const slugFrozen = product.is_published || slugTouched;
+  const effectiveSlug = slugify(slugFrozen ? slug.trim() || name : name);
   const [category, setCategory] = useState(product.category ?? categories[0]?.key ?? "торта");
   const [servings, setServings] = useState(String(product.servings ?? 12));
   const [finishedWeight, setFinishedWeight] = useState(
@@ -170,6 +178,8 @@ export default function RecipeEditor({
     setSaved(false);
     const payload: SavePayload = {
       name: name.trim() || "Без име",
+      slug: effectiveSlug,
+      slug_auto: !slugFrozen,
       category,
       servings: numOrNull(servings) ?? 1,
       finished_weight_g: numOrNull(finishedWeight),
@@ -265,6 +275,27 @@ export default function RecipeEditor({
               <div className="sm:col-span-2">
                 <label className={labelCls}>Име</label>
                 <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>
+                  Адрес на страницата{" "}
+                  <span className="text-neutral-400">
+                    — nutriko.fit/menu/<b className="text-neutral-600">{effectiveSlug}</b>
+                  </span>
+                </label>
+                <input
+                  className={inputCls}
+                  value={slugFrozen ? slug : effectiveSlug}
+                  onChange={(e) => {
+                    setSlugTouched(true);
+                    setSlug(e.target.value);
+                  }}
+                />
+                <p className="mt-1 text-xs text-neutral-500">
+                  {product.is_published
+                    ? "Продуктът е публикуван — адресът стои закован. Смяната му чупи всеки линк и всяко запаметено място към него."
+                    : "Прави се сам от името, докато продуктът не е публикуван. Пипнеш ли го, спира да следва името."}
+                </p>
               </div>
               <div>
                 <label className={labelCls}>Категория</label>

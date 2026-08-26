@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MenuItem } from "@/lib/data";
 import { eur } from "@/lib/price";
+import { hasProductPage, productHref } from "@/lib/links";
 
 type Group = { key: string; label: string; description?: string | null; items: MenuItem[] };
 
@@ -204,6 +205,23 @@ export default function MenuView({ groups }: { groups: Group[] }) {
 function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: number) => void }) {
   const imgs = m.image_urls.length ? m.image_urls : m.image_url ? [m.image_url] : [];
 
+  // Името води към страницата на продукта; снимката си остава уголемяване.
+  // Двете правят различни неща нарочно — в меню на телефон човек натиска
+  // снимката, за да види ястието, а не за да напусне списъка.
+  const title = (cls: string) =>
+    hasProductPage(m) ? (
+      <h3 className={cls}>
+        <Link
+          href={productHref(m.slug)}
+          className="rounded underline-offset-4 transition-colors hover:text-brand hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+        >
+          {m.name}
+        </Link>
+      </h3>
+    ) : (
+      <h3 className={cls}>{m.name}</h3>
+    );
+
   const image = (cls: string) =>
     imgs.length > 0 ? (
       <button
@@ -304,7 +322,7 @@ function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: numbe
       {/* МОБИЛЕН: заглавие+цена отгоре (пълна ширина), снимка вляво, текстът се увива и под нея */}
       <div className="sm:hidden">
         <div className="flex items-baseline justify-between gap-2 text-lg">
-          <h3 className="font-display font-medium leading-snug text-ink">{m.name}</h3>
+          {title("font-display font-medium leading-snug text-ink")}
           {price}
         </div>
         {whole}
@@ -320,7 +338,7 @@ function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: numbe
         {image("h-24 w-24")}
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-3 text-xl">
-            <h3 className="font-display font-medium text-ink">{m.name}</h3>
+            {title("font-display font-medium text-ink")}
             <span className="mb-1 flex-1 border-b border-dotted border-ink/25" aria-hidden />
             {price}
           </div>

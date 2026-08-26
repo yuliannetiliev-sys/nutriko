@@ -10,7 +10,10 @@ import FollowBar from "../FollowBar";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Меню",
+  // Не „Меню“. Заглавието на страницата е онова, което Google показва като
+  // син линк — а „Меню · Нутрико“ не отговаря на нито един въпрос, който
+  // някой би написал. Пише се цялото тук, за да не го издуе шаблонът.
+  title: { absolute: "Протеинови торти и десерти без захар · Нутрико, Търговище" },
   description:
     "Менюто на Нутрико: протеинови торти, вафли, халва, шейкове и напитки — без добавена захар. С грамажи, макроси, алергени и цени за всеки продукт.",
   alternates: { canonical: "/menu" },
@@ -77,7 +80,7 @@ export default async function MenuPage() {
         </p>
         <h1 className="font-display text-5xl font-semibold tracking-tight text-ink">Меню</h1>
         <p className="mt-3 text-muted">
-          Стойностите са за една порция.{" "}
+          Протеинови торти, вафли, халва и шейкове в Търговище. Стойностите са за една порция.{" "}
           <Link href="/alergeni" className="text-brand-600 underline-offset-2 hover:underline">
             Легенда за алергените →
           </Link>

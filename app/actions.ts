@@ -1,6 +1,7 @@
 "use server";
 
 import { db, getDb, requireAdmin } from "@/lib/supabase";
+import { slugify, uniqueSlug } from "@/lib/slug";
 import { sendContactNotification } from "@/lib/email";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -41,6 +42,9 @@ export async function changePassword(
 
 export type SavePayload = {
   name: string;
+  slug: string;
+  /** адресът е изведен от името, не е писан на ръка → сблъсък се решава, не гърми */
+  slug_auto: boolean;
   category: string | null;
   servings: number;
   finished_weight_g: number | null;
@@ -65,10 +69,19 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
   await requireAdmin();
   const supabase = await getDb();
 
+  // Автоматичният адрес се разминава тихо при сблъсък („Нов продукт“ два пъти).
+  // Ръчно написаният — не: там човекът трябва да разбере, че адресът е зает.
+  let slug = payload.slug;
+  if (payload.slug_auto) {
+    const { data } = await supabase.from("products").select("slug").neq("id", productId);
+    slug = uniqueSlug(payload.slug, (data ?? []).map((r: any) => r.slug as string));
+  }
+
   const { error: e1 } = await supabase
     .from("products")
     .update({
       name: payload.name,
+      slug,
       category: payload.category,
       servings: payload.servings,
       finished_weight_g: payload.finished_weight_g,
@@ -89,7 +102,13 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
       tags: payload.tags,
     })
     .eq("id", productId);
-  if (e1) throw new Error(e1.message);
+  // 23505 = UNIQUE(slug): друг продукт вече заема този адрес
+  if (e1)
+    throw new Error(
+      e1.code === "23505"
+        ? `Адресът „${payload.slug}“ вече се използва от друг продукт.`
+        : e1.message
+    );
 
   const { error: e2 } = await supabase
     .from("product_ingredients")
@@ -179,11 +198,18 @@ export async function uploadContentImage(
   return { url: data.publicUrl };
 }
 
+// Адресът на продукта се прави от името му. Виж lib/slug.ts защо изобщо
+// има такъв файл и защо адресът после не се пипа автоматично.
+async function freshProductSlug(supabase: any, name: string): Promise<string> {
+  const { data } = await supabase.from("products").select("slug");
+  return uniqueSlug(slugify(name), (data ?? []).map((r: any) => r.slug as string));
+}
+
 export async function createProduct(formData: FormData) {
   await requireAdmin();
   const name = (formData.get("name") as string)?.trim() || "Нов продукт";
   const supabase = await getDb();
-  const slug = "produkt-" + Math.random().toString(36).slice(2, 8);
+  const slug = await freshProductSlug(supabase, name);
   const { data, error } = await supabase
     .from("products")
     .insert({ slug, name, servings: 12 })
@@ -200,12 +226,13 @@ export async function duplicateProduct(id: number, newName?: string) {
   const { data: src, error: e0 } = await supabase.from("products").select("*").eq("id", id).single();
   if (e0 || !src) throw new Error(e0?.message ?? "Продуктът не е намерен");
 
-  const slug = "produkt-" + Math.random().toString(36).slice(2, 8);
+  const dupName = newName?.trim() || `${src.name} (копие)`;
+  const slug = await freshProductSlug(supabase, dupName);
   const { data: created, error: e1 } = await supabase
     .from("products")
     .insert({
       slug,
-      name: newName?.trim() || `${src.name} (копие)`,
+      name: dupName,
       category: src.category,
       servings: src.servings,
       finished_weight_g: src.finished_weight_g,

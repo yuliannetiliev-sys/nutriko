@@ -150,11 +150,8 @@ export type MenuItem = {
   gl_serving: number | null;
 };
 
-// Публичното меню — само публикувани, неархивирани (без цени/маржин вътрешни)
-export async function listPublicMenu(): Promise<MenuItem[]> {
-  const { data, error } = await db().from("public_menu_v").select("*").order("name");
-  if (error) throw error;
-  return (data ?? []).map((r: any) => ({
+function mapMenuItem(r: any): MenuItem {
+  return {
     slug: r.slug,
     name: r.name,
     category: r.category ?? null,
@@ -179,7 +176,21 @@ export async function listPublicMenu(): Promise<MenuItem[]> {
     kcal_100g: num(r.kcal_100g),
     gi_estimate: numOrNull(r.gi_estimate),
     gl_serving: numOrNull(r.gl_serving),
-  }));
+  };
+}
+
+// Публичното меню — само публикувани, неархивирани (без цени/маржин вътрешни)
+export async function listPublicMenu(): Promise<MenuItem[]> {
+  const { data, error } = await db().from("public_menu_v").select("*").order("name");
+  if (error) throw error;
+  return (data ?? []).map(mapMenuItem);
+}
+
+// Един продукт по адрес — за собствената му страница /menu/<slug>.
+// Същият изглед, същите правила за видимост: каквото не е в менюто, го няма и тук.
+export async function getPublicMenuItem(slug: string): Promise<MenuItem | null> {
+  const { data } = await db().from("public_menu_v").select("*").eq("slug", slug).maybeSingle();
+  return data ? mapMenuItem(data) : null;
 }
 
 // Категории на менюто (публично четими) — за менюто и избора в админа

@@ -352,6 +352,12 @@ export default async function Home() {
                   Обади се за торта
                 </a>
               )}
+              <Link
+                href="/torta-bez-zahar"
+                className="rounded-full border border-brand/30 px-6 py-3 font-medium text-brand-600 transition-colors hover:bg-brand-50"
+              >
+                Всички торти без захар
+              </Link>
               <a
                 href="#contact"
                 className="rounded-full border border-brand/30 px-6 py-3 font-medium text-brand-600 transition-colors hover:bg-brand-50"
