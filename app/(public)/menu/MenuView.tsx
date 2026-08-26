@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { MenuItem } from "@/lib/data";
-import { dualPrice, bgn } from "@/lib/price";
+import { eur } from "@/lib/price";
 
 type Group = { key: string; label: string; description?: string | null; items: MenuItem[] };
 
@@ -230,8 +230,7 @@ function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: numbe
   const price =
     m.price_eur != null ? (
       <span className="shrink-0 whitespace-nowrap font-display font-semibold text-ink tabular-nums">
-        €{m.price_eur.toFixed(2)}
-        <span className="ml-1 text-sm font-normal text-muted">/ {bgn(m.price_eur)} лв.</span>
+        {eur(m.price_eur)}
       </span>
     ) : null;
 
@@ -240,7 +239,7 @@ function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: numbe
       <p className="mt-1 text-xs text-muted">
         {m.category === "торта" ? "Цяла торта" : "Цяло"} ({m.servings}{" "}
         {m.category === "торта" ? "парчета" : "порции"}):{" "}
-        <span className="font-medium text-ink/80">{dualPrice(m.whole_price_eur)}</span>
+        <span className="font-medium text-ink/80">{eur(m.whole_price_eur)}</span>
       </p>
     ) : null;
 

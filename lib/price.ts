@@ -1,12 +1,9 @@
-// Двойно обозначаване на цените (EUR + BGN) — задължително в преходния период.
-// Официален фиксиран курс на БНБ: 1 EUR = 1.95583 BGN.
-const EUR_TO_BGN = 1.95583;
+// Цените се показват само в евро.
+//
+// Двойното обозначаване (EUR + BGN) беше задължително през преходния период
+// след приемането на еврото. Изискването отпадна — махнато на 2026-08-27.
+// Ако някога пак потрябва: курсът на БНБ е фиксиран 1 EUR = 1.95583 BGN.
 
-export function bgn(eur: number): string {
-  return (eur * EUR_TO_BGN).toFixed(2);
-}
-
-// „€3.90 / 7.63 лв." — двете цени една до друга.
-export function dualPrice(eur: number): string {
-  return `€${eur.toFixed(2)} / ${bgn(eur)} лв.`;
+export function eur(v: number): string {
+  return `€${v.toFixed(2)}`;
 }

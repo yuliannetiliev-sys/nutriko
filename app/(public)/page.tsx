@@ -3,7 +3,7 @@ import Image from "next/image";
 import QRCode from "qrcode";
 import { listPublicMenu, getSiteSettings } from "@/lib/data";
 import { mapsDirectionsUrl } from "@/lib/maps";
-import { dualPrice } from "@/lib/price";
+import { eur } from "@/lib/price";
 import { localBusinessJsonLd } from "@/lib/jsonld";
 import { getContent, clines, cpairs } from "@/lib/content";
 import { ARTICLE, articleHref } from "@/lib/links";
@@ -300,7 +300,7 @@ export default async function Home() {
                   )}
                   {m.price_eur != null && (
                     <p className="mt-auto pt-4 font-display text-lg font-semibold text-brand tabular-nums">
-                      {dualPrice(m.price_eur)}
+                      {eur(m.price_eur)}
                     </p>
                   )}
                 </div>

@@ -66,7 +66,7 @@ export function localBusinessJsonLd(s: SiteSettings, siteUrl: string) {
     // а резервният вариант остана да сочи към 404
     image: s.hero_image_url || `${siteUrl}/og.jpg`,
     priceRange: "€€",
-    currenciesAccepted: "EUR, BGN",
+    currenciesAccepted: "EUR",
     servesCuisine: "Протеинови десерти, торти, вафли, халва и шейкове",
     address: {
       "@type": "PostalAddress",
