@@ -72,7 +72,7 @@ export function localBusinessJsonLd(s: SiteSettings, siteUrl: string) {
       "@type": "PostalAddress",
       streetAddress: street || "ул. Екзарх Йосиф №4, кв. Вароша",
       addressLocality: "Търговище",
-      postalCode: "7703",
+      postalCode: "7700",  // сверено с Google Business Profile
       addressCountry: "BG",
     },
   };
