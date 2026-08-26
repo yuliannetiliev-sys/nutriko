@@ -62,7 +62,9 @@ export function localBusinessJsonLd(s: SiteSettings, siteUrl: string) {
     description:
       "Протеинова сладкарница — торти, вафли, халва, шейкове и смутита без добавена бяла захар.",
     url: siteUrl,
-    image: s.hero_image_url || `${siteUrl}/opengraph-image`,
+    // `/opengraph-image` беше изтрит на 17.07 (заменен със статичен /og.jpg),
+    // а резервният вариант остана да сочи към 404
+    image: s.hero_image_url || `${siteUrl}/og.jpg`,
     priceRange: "€€",
     currenciesAccepted: "EUR, BGN",
     servesCuisine: "Протеинови десерти, торти, вафли, халва и шейкове",
