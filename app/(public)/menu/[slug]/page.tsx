@@ -273,7 +273,24 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
           )}
 
-          {mine.length > 0 && (
+          {/* Празният списък НЕ означава „няма алергени". Ако разделът просто
+              изчезне, страницата мълчи там, където другите продукти изброяват —
+              а мълчанието се чете като отсъствие. При храна това е опасно. */}
+          {mine.length === 0 ? (
+            <div className="mt-6">
+              <h2 className="font-display text-lg font-semibold text-ink">Алергени</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                За този продукт още не са въведени. Питай на място, преди да поръчаш —{" "}
+                <Link
+                  href="/polezno/alergeni-i-obshta-kuhnya-kakvo-tryabva-da-znaesh"
+                  className="font-medium text-brand-600 underline-offset-2 hover:underline"
+                >
+                  за алергените и общата кухня
+                </Link>
+                .
+              </p>
+            </div>
+          ) : (
             <div className="mt-6">
               <h2 className="font-display text-lg font-semibold text-ink">Алергени</h2>
               <ul className="mt-2 flex flex-wrap gap-1.5">
