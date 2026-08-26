@@ -69,15 +69,16 @@ export default function FollowBar({ fb, ig }: { fb?: string | null; ig?: string 
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-5 sm:pb-5">
-      <div className="mx-auto flex max-w-3xl items-center gap-2 rounded-2xl bg-brand px-3 py-3 text-cream shadow-lg sm:gap-3 sm:px-5">
-        {/* На тесен екран остава само въпросът — иначе редът се пренася на три
-            и лентата изяжда половината менюто. */}
+      <div className="mx-auto flex max-w-3xl flex-col items-start gap-2 rounded-2xl bg-brand px-4 py-3 text-cream shadow-lg sm:flex-row sm:items-center sm:gap-3 sm:px-5">
+        {/* На телефон текстът заема целия ред, а бутоните слизат отдолу.
+            Ако стоят един до друг, на текста остават ~140 px и изречението
+            се начупва на три реда. */}
         <p className="min-w-0 flex-1 text-[13px] leading-snug sm:text-sm">
-          <span className="font-medium whitespace-nowrap">Какво има днес?</span>
-          <span className="hidden text-cream/80 sm:inline"> Казваме първо там.</span>
+          <span className="font-medium">Какво има днес?</span>
+          <span className="text-cream/80"> Казваме първо там.</span>
         </p>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto">
           {fb && (
             <a
               href={fb}
@@ -111,7 +112,7 @@ export default function FollowBar({ fb, ig }: { fb?: string | null; ig?: string 
             type="button"
             onClick={() => close("dismissed")}
             aria-label="Скрий"
-            className="rounded-full p-1.5 text-cream/60 transition-colors hover:bg-cream/10 hover:text-cream"
+            className="ml-auto rounded-full p-1.5 sm:ml-0 text-cream/60 transition-colors hover:bg-cream/10 hover:text-cream"
           >
             <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 fill-none stroke-current stroke-2">
               <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
