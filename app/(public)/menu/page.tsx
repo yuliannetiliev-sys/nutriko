@@ -5,6 +5,7 @@ import { listPublicMenu, listCategories, getSiteSettings, type MenuItem } from "
 import { ARTICLE, articleHref } from "@/lib/links";
 import MenuView from "./MenuView";
 import FollowCard from "../FollowCard";
+import FollowBar from "../FollowBar";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,7 @@ export default async function MenuPage() {
       )}
 
       <FollowCard s={s} />
+      <FollowBar fb={s.facebook_url} ig={s.instagram_url} />
 
       <p className="mx-auto mt-20 max-w-xl border-t border-ink/10 pt-6 text-center text-xs leading-relaxed text-muted/80">
         Грамажите са приблизителни и може да варират при ръчно приготвяне. Макросите са референтни
