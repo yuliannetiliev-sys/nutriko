@@ -140,7 +140,7 @@ export default function ProductsList({
                   <Link href={`/products/${p.id}`} className="font-medium text-neutral-900 hover:underline">
                     {p.name}
                   </Link>
-                  {p.is_published && p.show_macros && p.allergen_ids.length === 0 && (
+                  {p.is_published && p.allergen_ids.length === 0 && (
                     <Link
                       href={`/products/${p.id}`}
                       title="Публикуван е, но няма въведен нито един алерген"
