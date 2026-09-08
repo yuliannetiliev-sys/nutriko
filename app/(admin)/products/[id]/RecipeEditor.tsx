@@ -15,6 +15,13 @@ import {
 import { slugify } from "@/lib/slug";
 import { compressImage } from "@/lib/compressImage";
 
+// Обратни апострофи: текстът има истински нови редове, без escape-и.
+const POTVARZHDENIE = `Този продукт е публикуван, а няма избран нито един алерген.
+
+Страницата му ще каже на клиента, че алергените още не са въведени.
+
+Да запазя ли въпреки това?`;
+
 type Row = { ingredient: Ingredient; qty: number };
 
 const f = (n: number, d = 2) =>
@@ -117,6 +124,12 @@ export default function RecipeEditor({
   const [prepNotes, setPrepNotes] = useState(product.prep_notes ?? "");
   const [allergenIds, setAllergenIds] = useState<number[]>(product.allergen_ids ?? []);
 
+  // Публикуван наш продукт БЕЗ алергени е тихата грешка, която боли най-много:
+  // страницата показва раздел „Алергени", а той казва „не са въведени" —
+  // и човек с алергия го чете като „питай", вместо като „внимавай".
+  // `showMacros` разграничава нашите рецепти от купеното отвън (вода, кафе).
+  const alergeniLipsvat = isPublished && showMacros && allergenIds.length === 0;
+
   function toggleAllergen(id: number) {
     setAllergenIds((s) =>
       s.includes(id) ? s.filter((x) => x !== id) : [...s, id].sort((a, b) => a - b)
@@ -174,6 +187,9 @@ export default function RecipeEditor({
   }
 
   function onSave() {
+    // Тихата грешка, която боли най-много: публикуван наш продукт без
+    // алергени. Предупреждението може да се подмине, но не незабелязано.
+    if (alergeniLipsvat && !window.confirm(POTVARZHDENIE)) return;
     setErr(null);
     setSaved(false);
     const payload: SavePayload = {
@@ -403,6 +419,14 @@ export default function RecipeEditor({
                 {allergenIds.length > 0 && (
                   <p className="mt-1.5 text-xs text-neutral-500">
                     В менюто ще се покаже: Алергени {[...allergenIds].sort((a, b) => a - b).join(", ")}
+                  </p>
+                )}
+                {alergeniLipsvat && (
+                  <p className="mt-2 rounded-md border border-red-300 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-800">
+                    <b>Няма избран нито един алерген</b>, а продуктът е публикуван.
+                    Страницата му ще каже на клиента „още не са въведени“. Ако наистина
+                    няма — избери, че няма, като оставиш полето празно и запазиш въпреки
+                    предупреждението.
                   </p>
                 )}
               </div>

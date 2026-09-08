@@ -140,6 +140,15 @@ export default function ProductsList({
                   <Link href={`/products/${p.id}`} className="font-medium text-neutral-900 hover:underline">
                     {p.name}
                   </Link>
+                  {p.is_published && p.show_macros && p.allergen_ids.length === 0 && (
+                    <Link
+                      href={`/products/${p.id}`}
+                      title="Публикуван е, но няма въведен нито един алерген"
+                      className="ml-2 whitespace-nowrap rounded-full border border-red-300 bg-red-50 px-2 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-100"
+                    >
+                      без алергени
+                    </Link>
+                  )}
                 </td>
                 <td className="px-3 py-2 text-neutral-600">{p.category ?? "—"}</td>
                 <td className="px-3 py-2 text-right">{p.servings}</td>
