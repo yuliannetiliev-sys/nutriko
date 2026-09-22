@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -26,12 +26,33 @@ function loadClarity() {
 
 export default function CookieConsent() {
   const [show, setShow] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const c = localStorage.getItem(KEY);
     if (c === "accepted") loadClarity();
     else if (!c) setShow(true);
   }, []);
+
+  // Казва на другите долни ленти (поканата за следване в менюто) колко място
+  // заема, за да се наредят НАД банера. Хората често не отговарят на бисквитките —
+  // лента, която чака отговор, просто никога не се появява.
+  useEffect(() => {
+    const root = document.documentElement;
+    const el = ref.current;
+    if (!show || !el) {
+      root.style.setProperty("--consent-h", "0px");
+      return;
+    }
+    const update = () => root.style.setProperty("--consent-h", `${el.offsetHeight}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.setProperty("--consent-h", "0px");
+    };
+  }, [show]);
 
   if (!show) return null;
 
@@ -46,7 +67,7 @@ export default function CookieConsent() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-ink/10 bg-cream/95 shadow-[0_-8px_30px_-20px_rgba(31,71,51,0.5)] backdrop-blur">
+    <div ref={ref} className="fixed inset-x-0 bottom-0 z-50 border-t border-ink/10 bg-cream/95 shadow-[0_-8px_30px_-20px_rgba(31,71,51,0.5)] backdrop-blur">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-relaxed text-ink/80">
           Ползваме бисквитки за анонимна статистика (Microsoft Clarity), за да подобряваме сайта.

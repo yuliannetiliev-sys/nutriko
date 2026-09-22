@@ -17,11 +17,14 @@ import { useEffect, useState } from "react";
  * това е първото му впечатление от заведението. Затова лентата чака, докато
  * той сам разгледа, и никога не пречи на четенето.
  *
- * ⚠️ Изчаква и лентата за бисквитки — иначе двете стоят една върху друга.
+ * ⚠️ БИСКВИТКИТЕ: лентата НЕ чака отговор на банера. Първоначално чакаше, за да
+ * не стоят двете една върху друга — но хората масово не отговарят на бисквитките
+ * и поканата просто никога не се появяваше (забелязано в деня на отварянето, 22.09).
+ * Сега се нарежда НАД банера: CookieConsent публикува височината си в `--consent-h`,
+ * а тази лента се вдига точно с толкова. Щом банерът изчезне, слиза на дъното.
  */
 
 const KEY = "nutriko-follow";
-const CONSENT_KEY = "nutriko-consent";
 const SCROLL_PX = 900; // ~две екрана на телефон: човекът е видял продукти
 
 export default function FollowBar({ fb, ig }: { fb?: string | null; ig?: string | null }) {
@@ -38,11 +41,6 @@ export default function FollowBar({ fb, ig }: { fb?: string | null; ig?: string 
 
     const onScroll = () => {
       if (done || window.scrollY < SCROLL_PX) return;
-      try {
-        if (!localStorage.getItem(CONSENT_KEY)) return; // бисквитките са още на екрана
-      } catch {
-        return;
-      }
       done = true;
       setShow(true);
       window.removeEventListener("scroll", onScroll);
@@ -68,7 +66,10 @@ export default function FollowBar({ fb, ig }: { fb?: string | null; ig?: string 
     "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors sm:px-4";
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-5 sm:pb-5">
+    <div
+      className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-transform duration-200 sm:px-5 sm:pb-5"
+      style={{ transform: "translateY(calc(-1 * var(--consent-h, 0px)))" }}
+    >
       <div className="mx-auto flex max-w-3xl flex-col items-start gap-2 rounded-2xl bg-brand px-4 py-3 text-cream shadow-lg sm:flex-row sm:items-center sm:gap-3 sm:px-5">
         {/* На телефон текстът заема целия ред, а бутоните слизат отдолу.
             Ако стоят един до друг, на текста остават ~140 px и изречението
