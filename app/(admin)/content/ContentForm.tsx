@@ -45,13 +45,6 @@ const GROUPS: { title: string; fields: Field[] }[] = [
     ],
   },
   {
-    title: "Скоро отваряме",
-    fields: [
-      { key: "prelaunch_heading", label: "Заглавие" },
-      { key: "prelaunch_body", label: "Текст", area: true },
-    ],
-  },
-  {
     title: "Преди да дойдеш",
     fields: [
       { key: "before_heading", label: "Заглавие" },

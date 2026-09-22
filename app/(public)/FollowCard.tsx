@@ -16,7 +16,14 @@ import type { SiteSettings } from "@/lib/types";
  * Линковете идват от настройките (/site), не се пишат тук — иначе биха се
  * разминали с тези във футъра.
  */
-export default function FollowCard({ s }: { s: SiteSettings }) {
+export default function FollowCard({
+  s,
+  className = "mt-16",
+}: {
+  s: SiteSettings;
+  /** отстъпът отгоре — в менюто е голям, на началната страница секцията си има свой */
+  className?: string;
+}) {
   const fb = s.facebook_url?.trim();
   const ig = s.instagram_url?.trim();
   if (!fb && !ig) return null;
@@ -26,7 +33,7 @@ export default function FollowCard({ s }: { s: SiteSettings }) {
     "text-sm font-medium transition-colors";
 
   return (
-    <aside className="mx-auto mt-16 max-w-2xl rounded-3xl border border-ink/10 bg-brand-50 px-6 py-8 text-center sm:px-10">
+    <aside className={`mx-auto ${className} max-w-2xl rounded-3xl border border-ink/10 bg-brand-50 px-6 py-8 text-center sm:px-10`}>
       <p className="mb-3 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-brand-600">
         <span className="h-px w-6 bg-gold" />
         Всеки ден

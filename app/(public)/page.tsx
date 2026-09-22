@@ -9,12 +9,13 @@ import { getContent, clines, cpairs } from "@/lib/content";
 import { ARTICLE, articleHref } from "@/lib/links";
 import type { Metadata } from "next";
 import ContactForm from "./ContactForm";
+import FollowCard from "./FollowCard";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   description:
-    "Протеинови торти, вафли, халва, шейкове и смутита — без добавена бяла захар, с повече протеин, ядки и тахан. Скоро отваряме в Търговище. Виж менюто и маршрута.",
+    "Протеинови торти, вафли, халва, шейкове и смутита — без добавена бяла захар, с повече протеин, ядки и тахан. Отворено всеки ден в Търговище, кв. Вароша. Виж менюто и маршрута.",
   alternates: { canonical: "/" },
   openGraph: {
     url: "/",
@@ -92,7 +93,7 @@ export default async function Home() {
         <div className="mx-auto max-w-5xl px-5 pt-14 pb-10 sm:pt-20">
           <p className="mb-4 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-[0.18em] text-brand-600">
             <span className="h-px w-8 bg-gold" />
-            Скоро отваряме в Търговище
+            Отворено всеки ден · Търговище
           </p>
           <h1 className="max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight text-ink sm:text-5xl">
             {s.hero_title || HERO_TITLE_FALLBACK}
@@ -392,40 +393,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ===== СКОРО ОТВАРЯМЕ (pre-launch) ===== */}
+      {/* ===== ВИТРИНАТА СЕ СМЕНЯ — следване =====
+          Тук стоеше „Скоро отваряме" с бутон „Искам да разбера кога отваряте".
+          След откриването (09.2026) въпросът отпадна; остава поводът да ни
+          следват — какво има днес във витрината. */}
       <section className="mx-auto max-w-5xl px-5 py-12">
-        <div className="rounded-3xl border border-gold/40 bg-gold/10 px-8 py-10 text-center">
-          <h2 className="font-display text-3xl font-semibold text-ink">{c.prelaunch_heading}</h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted">{c.prelaunch_body}</p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#contact"
-              className="rounded-full bg-brand px-6 py-3 font-medium text-cream transition-colors hover:bg-brand-600"
-            >
-              Искам да разбера кога отваряте
-            </a>
-            {s.instagram_url && (
-              <a
-                href={s.instagram_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-brand/30 px-6 py-3 font-medium text-brand-600 transition-colors hover:bg-brand-50"
-              >
-                Instagram
-              </a>
-            )}
-            {s.facebook_url && (
-              <a
-                href={s.facebook_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-brand/30 px-6 py-3 font-medium text-brand-600 transition-colors hover:bg-brand-50"
-              >
-                Facebook
-              </a>
-            )}
-          </div>
-        </div>
+        <FollowCard s={s} className="mt-0" />
       </section>
 
       {/* ===== ПРЕДИ ДА ДОЙДЕШ ===== */}
