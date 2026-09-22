@@ -168,22 +168,23 @@ export default async function Home() {
                   // Светъл воал отляво: текстът стои върху мрамора, продуктите вдясно остават живи.
                   <div
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream/85 via-cream/40 to-transparent sm:block"
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-r from-cream/85 via-cream/40 to-transparent"
                   />
                 )}
               </div>
               {/* Сезонният надпис е ИСТИНСКИ текст, не вграден в снимката: същата снимка е и
-                  тясна лента в менюто, където вграден текст би се срязал. На телефон стои под
-                  снимката — там тя е твърде малка за текст отгоре. */}
+                  тясна лента в менюто, където вграден текст би се срязал. Стои върху снимката
+                  на всички размери — на телефон по-дребен и без реда отдолу (22.09: Юлиан го
+                  искаше върху снимката, не под нея). */}
               {heroCaption && (
-                <div className="mt-6 sm:absolute sm:inset-y-0 sm:left-0 sm:mt-0 sm:flex sm:w-1/2 sm:flex-col sm:justify-center sm:pl-[6%] sm:pr-2">
+                <div className="absolute inset-y-0 left-0 flex w-[56%] flex-col justify-center pl-[6%] pr-2 sm:w-1/2">
                   {c.hero_image_eyebrow && (
-                    <p className="w-fit rounded-full border border-gold/50 bg-cream/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand lg:text-xs">
+                    <p className="w-fit rounded-full border border-gold/50 bg-cream/85 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-brand sm:px-4 sm:py-1.5 sm:text-[11px] lg:text-xs">
                       {c.hero_image_eyebrow}
                     </p>
                   )}
                   {(c.hero_image_title || c.hero_image_accent) && (
-                    <p className="mt-3 font-display text-3xl font-semibold leading-[1.05] text-ink md:text-4xl lg:text-5xl">
+                    <p className="mt-2 font-display text-xl font-semibold leading-[1.05] text-ink sm:mt-3 sm:text-3xl md:text-4xl lg:text-5xl">
                       {c.hero_image_title}
                       {c.hero_image_accent && (
                         <span className="block text-gold">{c.hero_image_accent}</span>
@@ -191,7 +192,7 @@ export default async function Home() {
                     </p>
                   )}
                   {c.hero_image_text && (
-                    <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted sm:hidden md:block lg:text-base">
+                    <p className="mt-3 hidden max-w-sm text-sm leading-relaxed text-muted md:block lg:text-base">
                       {c.hero_image_text}
                     </p>
                   )}
