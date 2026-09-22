@@ -67,6 +67,9 @@ export default async function Home() {
   const differentiators = cpairs(c.differentiators);
   const before = clines(c.before);
   const faq = cpairs(c.faq);
+  const heroCaption = Boolean(
+    c.hero_image_eyebrow || c.hero_image_title || c.hero_image_accent || c.hero_image_text
+  );
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nutriko.fit";
   const qrSvg = await QRCode.toString(`${siteUrl}/menu`, {
@@ -151,15 +154,49 @@ export default async function Home() {
           )}
 
           {s.hero_image_url && (
-            <div className="relative mt-10 aspect-video w-full overflow-hidden rounded-3xl">
-              <Image
-                src={s.hero_image_url}
-                alt="Нутрико — протеинови торти, вафли и шейкове без добавена захар"
-                fill
-                sizes="(min-width: 1024px) 1024px, 100vw"
-                priority
-                className="object-cover"
-              />
+            <div className="relative mt-10">
+              <div className="relative aspect-video w-full overflow-hidden rounded-3xl">
+                <Image
+                  src={s.hero_image_url}
+                  alt="Нутрико — протеинови торти, вафли и шейкове без добавена захар"
+                  fill
+                  sizes="(min-width: 1024px) 1024px, 100vw"
+                  priority
+                  className="object-cover"
+                />
+                {heroCaption && (
+                  // Светъл воал отляво: текстът стои върху мрамора, продуктите вдясно остават живи.
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-cream/85 via-cream/40 to-transparent sm:block"
+                  />
+                )}
+              </div>
+              {/* Сезонният надпис е ИСТИНСКИ текст, не вграден в снимката: същата снимка е и
+                  тясна лента в менюто, където вграден текст би се срязал. На телефон стои под
+                  снимката — там тя е твърде малка за текст отгоре. */}
+              {heroCaption && (
+                <div className="mt-6 sm:absolute sm:inset-y-0 sm:left-0 sm:mt-0 sm:flex sm:w-1/2 sm:flex-col sm:justify-center sm:pl-[6%] sm:pr-2">
+                  {c.hero_image_eyebrow && (
+                    <p className="w-fit rounded-full border border-gold/50 bg-cream/85 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand lg:text-xs">
+                      {c.hero_image_eyebrow}
+                    </p>
+                  )}
+                  {(c.hero_image_title || c.hero_image_accent) && (
+                    <p className="mt-3 font-display text-3xl font-semibold leading-[1.05] text-ink md:text-4xl lg:text-5xl">
+                      {c.hero_image_title}
+                      {c.hero_image_accent && (
+                        <span className="block text-gold">{c.hero_image_accent}</span>
+                      )}
+                    </p>
+                  )}
+                  {c.hero_image_text && (
+                    <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted sm:hidden md:block lg:text-base">
+                      {c.hero_image_text}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

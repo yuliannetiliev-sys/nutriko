@@ -9,6 +9,19 @@ import type { ContentMap } from "@/lib/content";
 type Field = { key: string; label: string; area?: boolean; hint?: string; image?: boolean };
 const GROUPS: { title: string; fields: Field[] }[] = [
   {
+    title: "Надпис върху снимката (начална страница)",
+    fields: [
+      {
+        key: "hero_image_eyebrow",
+        label: "Надпис в рамката",
+        hint: "сменя се заедно със снимката (Сайт → Банер); всички празни = без надпис; в менюто не се показва",
+      },
+      { key: "hero_image_title", label: "Заглавие — зелено" },
+      { key: "hero_image_accent", label: "Заглавие — втори ред, златно" },
+      { key: "hero_image_text", label: "Ред отдолу", area: true },
+    ],
+  },
+  {
     title: "Лента под hero (без добавена захар)",
     fields: [{ key: "sugar_note", label: "Текст", area: true }],
   },
