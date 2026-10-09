@@ -250,6 +250,10 @@ export default function RecipeEditor({
     const n = numOrNull(v) ?? 0;
     setRows((r) => r.map((row, k) => (k === idx ? { ...row, qty: n } : row)));
   }
+  /** Премества съставка в друга секция, без да се трие и въвежда наново. */
+  function setRowSection(idx: number, component: string) {
+    setRows((r) => r.map((row, k) => (k === idx ? { ...row, component } : row)));
+  }
   function removeRow(idx: number) {
     setRows((r) => r.filter((_, k) => k !== idx));
   }
@@ -679,6 +683,20 @@ export default function RecipeEditor({
                           className="flex items-center gap-2 text-sm"
                         >
                           <span className="flex-1 truncate">{row.ingredient.name}</span>
+                          {sections.length > 1 && (
+                            <select
+                              value={row.component}
+                              onChange={(e) => setRowSection(idx, e.target.value)}
+                              aria-label="Секция"
+                              className="h-8 max-w-28 shrink-0 rounded-md border border-neutral-300 bg-white px-1 text-xs text-neutral-600"
+                            >
+                              {sections.map((sec) => (
+                                <option key={sec || "__none__"} value={sec}>
+                                  {sec || "Без секция"}
+                                </option>
+                              ))}
+                            </select>
+                          )}
                           <input
                             className="h-8 w-20 rounded-md border border-neutral-300 px-2 text-right text-sm"
                             value={String(row.qty)}
