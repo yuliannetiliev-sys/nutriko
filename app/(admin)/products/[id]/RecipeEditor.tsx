@@ -22,7 +22,10 @@ const POTVARZHDENIE = `Този продукт е публикуван, а ня�
 
 Да запазя ли въпреки това?`;
 
-type Row = { ingredient: Ingredient; qty: number };
+type Row = { ingredient: Ingredient; qty: number; component: string };
+
+/** Готови имена за секции — само предложения, свободен текст също става. */
+const SECTION_SUGGESTIONS = ["Блат", "Крем", "Крем 1", "Крем 2", "Заливка", "Декорация", "Сироп"];
 
 const f = (n: number, d = 2) =>
   n.toLocaleString("bg-BG", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -140,18 +143,44 @@ export default function RecipeEditor({
   }
 
   const [rows, setRows] = useState<Row[]>(
-    initialLines.map((l) => ({ ingredient: l.ingredient, qty: gramsToUnit(l.grams, l.ingredient) }))
+    initialLines.map((l) => ({
+      ingredient: l.ingredient,
+      qty: gramsToUnit(l.grams, l.ingredient),
+      component: l.component ?? "",
+    }))
   );
+  // Секциите се пазят отделно от редовете: нова празна секция още няма
+  // съставки и не може да се изведе от тях.
+  const [sections, setSections] = useState<string[]>(() => {
+    const seen: string[] = [];
+    for (const l of initialLines) {
+      const c = l.component ?? "";
+      if (!seen.includes(c)) seen.push(c);
+    }
+    return seen.length ? seen : [""];
+  });
+  const [addTo, setAddTo] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
-  const usedIds = useMemo(() => new Set(rows.map((r) => r.ingredient.id)), [rows]);
+  // Една съставка може да е в РАЗНИ секции (еритритол в блата и в крема),
+  // но не два пъти в една и съща.
+  const usedInSection = useMemo(() => {
+    const m = new Map<string, Set<number>>();
+    for (const r of rows) {
+      const set = m.get(r.component) ?? new Set<number>();
+      set.add(r.ingredient.id);
+      m.set(r.component, set);
+    }
+    return m;
+  }, [rows]);
   const matches = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return [];
+    if (!q || addTo === null) return [];
+    const used = usedInSection.get(addTo) ?? new Set<number>();
     return catalog
-      .filter((i) => !usedIds.has(i.id) && i.name.toLowerCase().includes(q))
+      .filter((i) => !used.has(i.id) && i.name.toLowerCase().includes(q))
       .slice(0, 8);
-  }, [search, catalog, usedIds]);
+  }, [search, catalog, usedInSection, addTo]);
 
   const totals = useMemo(
     () =>
@@ -178,8 +207,44 @@ export default function RecipeEditor({
   }
 
   function addIngredient(i: Ingredient) {
-    setRows((r) => [...r, { ingredient: i, qty: i.unit === "бр." ? 1 : 100 }]);
+    const component = addTo ?? sections[0] ?? "";
+    setRows((r) => [...r, { ingredient: i, qty: i.unit === "бр." ? 1 : 100, component }]);
     setSearch("");
+  }
+  function addSection() {
+    const taken = new Set(sections);
+    const name = SECTION_SUGGESTIONS.find((x) => !taken.has(x)) ?? `Секция ${sections.length + 1}`;
+    setSections((s) => [...s, name]);
+    setAddTo(name);
+    setSearch("");
+  }
+  /** Преименуване. Ако името вече съществува, двете секции се сливат. */
+  function renameSection(oldName: string, raw: string) {
+    const name = raw.trim();
+    if (name === oldName) return;
+    const exists = sections.includes(name);
+    setRows((r) =>
+      r.map((row) => (row.component === oldName ? { ...row, component: name } : row))
+    );
+    setSections((s) =>
+      exists ? s.filter((x) => x !== oldName) : s.map((x) => (x === oldName ? name : x))
+    );
+    setAddTo((a) => (a === oldName ? name : a));
+  }
+  function moveSection(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= sections.length) return;
+    setSections((s) => {
+      const c = [...s];
+      [c[i], c[j]] = [c[j], c[i]];
+      return c;
+    });
+  }
+  /** Маха се само празна секция — съставки не изчезват мълчаливо. */
+  function removeSection(name: string) {
+    if (rows.some((r) => r.component === name)) return;
+    setSections((s) => s.filter((x) => x !== name));
+    setAddTo((a) => (a === name ? null : a));
   }
   function setQty(idx: number, v: string) {
     const n = numOrNull(v) ?? 0;
@@ -219,6 +284,8 @@ export default function RecipeEditor({
       lines: rows.map((r) => ({
         ingredient_id: r.ingredient.id,
         grams: unitToGrams(r.qty, r.ingredient),
+        component: r.component,
+        sort_order: Math.max(0, sections.indexOf(r.component)),
       })),
     };
     startTransition(async () => {
@@ -539,70 +606,155 @@ export default function RecipeEditor({
               <span className="text-xs text-neutral-400">общо {f(totals.totalGrams, 0)} {servingUnit}</span>
             </div>
 
-            <div className="space-y-1">
-              {rows.map((row, idx) => {
-                const grams = unitToGrams(row.qty, row.ingredient);
-                const cost =
-                  row.ingredient.price_entered && row.ingredient.price_eur_100 != null
-                    ? (grams / 100) * row.ingredient.price_eur_100
-                    : null;
-                const kcal = (grams / 100) * (row.ingredient.kcal_100 ?? 0);
-                return (
-                  <div key={row.ingredient.id} className="flex items-center gap-2 text-sm">
-                    <span className="flex-1 truncate">{row.ingredient.name}</span>
-                    <input
-                      className="h-8 w-20 rounded-md border border-neutral-300 px-2 text-right text-sm"
-                      value={String(row.qty)}
-                      onChange={(e) => setQty(idx, e.target.value)}
-                    />
-                    <span className="w-8 text-xs text-neutral-400">{row.ingredient.unit}</span>
-                    <span className="w-20 text-right text-xs tabular-nums text-neutral-500">
-                      {cost != null ? `€${f(cost)}` : "—"}
-                    </span>
-                    <span className="w-16 text-right text-xs tabular-nums text-neutral-400">
-                      {f(kcal, 0)} kcal
-                    </span>
-                    <button
-                      onClick={() => removeRow(idx)}
-                      className="text-neutral-400 hover:text-red-600"
-                      aria-label="Премахни"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                );
-              })}
-              {rows.length === 0 && (
-                <p className="py-4 text-center text-sm text-neutral-400">Няма съставки още.</p>
-              )}
-            </div>
+            {/* Секции: блат, крем 1, крем 2, заливка… Стара рецепта без секции
+                влиза в една безименна — нищо не се чупи. */}
+            <datalist id="section-names">
+              {SECTION_SUGGESTIONS.map((s) => (
+                <option key={s} value={s} />
+              ))}
+            </datalist>
 
-            {/* Добавяне */}
-            <div className="relative mt-3">
-              <input
-                className={inputCls}
-                placeholder="Търси съставка за добавяне…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              {matches.length > 0 && (
-                <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-neutral-200 bg-white shadow-lg">
-                  {matches.map((i) => (
-                    <button
-                      key={i.id}
-                      onClick={() => addIngredient(i)}
-                      className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-neutral-50"
-                    >
-                      <span className="truncate">{i.name}</span>
-                      <span className="ml-2 shrink-0 text-xs text-neutral-400">
-                        {i.unit === "бр." ? "на бройка" : "g"}
-                        {!i.price_entered && " · без цена"}
+            {sections.map((section, si) => {
+              const inSection = rows
+                .map((r, idx) => ({ r, idx }))
+                .filter((x) => x.r.component === section);
+              const sectionGrams = inSection.reduce(
+                (sum, { r }) => sum + unitToGrams(r.qty, r.ingredient),
+                0
+              );
+              return (
+                <div key={section || "__none__"} className="mb-4">
+                  <div className="mb-1 flex items-center gap-1 border-b border-neutral-200 pb-1">
+                    <input
+                      key={section}
+                      defaultValue={section}
+                      list="section-names"
+                      placeholder="Без секция"
+                      onBlur={(e) => renameSection(section, e.target.value)}
+                      className="min-w-0 flex-1 bg-transparent text-xs font-medium uppercase tracking-wide text-neutral-500 outline-none placeholder:normal-case placeholder:tracking-normal focus:text-neutral-900"
+                    />
+                    {sectionGrams > 0 && (
+                      <span className="shrink-0 text-xs tabular-nums text-neutral-400">
+                        {f(sectionGrams, 0)} g
                       </span>
+                    )}
+                    <button
+                      onClick={() => moveSection(si, -1)}
+                      disabled={si === 0}
+                      className="px-1 text-neutral-400 hover:text-neutral-900 disabled:opacity-30"
+                      aria-label="Нагоре"
+                    >
+                      ▲
                     </button>
-                  ))}
+                    <button
+                      onClick={() => moveSection(si, 1)}
+                      disabled={si === sections.length - 1}
+                      className="px-1 text-neutral-400 hover:text-neutral-900 disabled:opacity-30"
+                      aria-label="Надолу"
+                    >
+                      ▼
+                    </button>
+                    {inSection.length === 0 && sections.length > 1 && (
+                      <button
+                        onClick={() => removeSection(section)}
+                        className="px-1 text-neutral-400 hover:text-red-600"
+                        aria-label="Махни секцията"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    {inSection.map(({ r: row, idx }) => {
+                      const grams = unitToGrams(row.qty, row.ingredient);
+                      const cost =
+                        row.ingredient.price_entered && row.ingredient.price_eur_100 != null
+                          ? (grams / 100) * row.ingredient.price_eur_100
+                          : null;
+                      const kcal = (grams / 100) * (row.ingredient.kcal_100 ?? 0);
+                      return (
+                        <div
+                          key={`${section}|${row.ingredient.id}`}
+                          className="flex items-center gap-2 text-sm"
+                        >
+                          <span className="flex-1 truncate">{row.ingredient.name}</span>
+                          <input
+                            className="h-8 w-20 rounded-md border border-neutral-300 px-2 text-right text-sm"
+                            value={String(row.qty)}
+                            onChange={(e) => setQty(idx, e.target.value)}
+                          />
+                          <span className="w-8 text-xs text-neutral-400">{row.ingredient.unit}</span>
+                          <span className="w-20 text-right text-xs tabular-nums text-neutral-500">
+                            {cost != null ? `€${f(cost)}` : "—"}
+                          </span>
+                          <span className="w-16 text-right text-xs tabular-nums text-neutral-400">
+                            {f(kcal, 0)} kcal
+                          </span>
+                          <button
+                            onClick={() => removeRow(idx)}
+                            className="text-neutral-400 hover:text-red-600"
+                            aria-label="Премахни"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {addTo === section ? (
+                    <div className="relative mt-2">
+                      <input
+                        autoFocus
+                        className={inputCls}
+                        placeholder="Търси съставка за добавяне…"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                      {matches.length > 0 && (
+                        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-neutral-200 bg-white shadow-lg">
+                          {matches.map((i) => (
+                            <button
+                              key={i.id}
+                              onClick={() => addIngredient(i)}
+                              className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-neutral-50"
+                            >
+                              <span className="truncate">{i.name}</span>
+                              <span className="ml-2 shrink-0 text-xs text-neutral-400">
+                                {i.unit === "бр." ? "на бройка" : "g"}
+                                {!i.price_entered && " · без цена"}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setAddTo(section);
+                        setSearch("");
+                      }}
+                      className="mt-1 text-xs text-neutral-500 hover:text-neutral-900"
+                    >
+                      + съставка
+                    </button>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })}
+
+            {rows.length === 0 && (
+              <p className="py-4 text-center text-sm text-neutral-400">Няма съставки още.</p>
+            )}
+
+            <button
+              onClick={addSection}
+              className="mt-1 rounded-md border border-dashed border-neutral-300 px-3 py-1.5 text-xs text-neutral-500 hover:border-neutral-400 hover:text-neutral-900"
+            >
+              + нова секция
+            </button>
           </div>
         </div>
 

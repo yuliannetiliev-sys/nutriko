@@ -62,7 +62,7 @@ export type SavePayload = {
   allergen_ids: number[];
   image_urls: string[];
   tags: string[];
-  lines: { ingredient_id: number; grams: number }[];
+  lines: { ingredient_id: number; grams: number; component: string; sort_order: number }[];
 };
 
 export async function saveRecipe(productId: number, payload: SavePayload) {
@@ -116,15 +116,25 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
     .eq("product_id", productId);
   if (e2) throw new Error(e2.message);
 
-  const merged = new Map<number, number>();
+  // Сумират се само редове от ЕДНА И СЪЩА секция. Еритритолът за блата и
+  // този за крема са два отделни реда — затова ключът включва и компонента.
+  type Row = { ingredient_id: number; grams: number; component: string; sort_order: number };
+  const merged = new Map<string, Row>();
   for (const l of payload.lines) {
-    if (l.grams > 0) merged.set(l.ingredient_id, (merged.get(l.ingredient_id) ?? 0) + l.grams);
+    if (l.grams <= 0) continue;
+    const component = (l.component ?? "").trim();
+    const key = JSON.stringify([l.ingredient_id, component]);
+    const prev = merged.get(key);
+    if (prev) prev.grams += l.grams;
+    else
+      merged.set(key, {
+        ingredient_id: l.ingredient_id,
+        grams: l.grams,
+        component,
+        sort_order: l.sort_order ?? 0,
+      });
   }
-  const rows = [...merged.entries()].map(([ingredient_id, grams]) => ({
-    product_id: productId,
-    ingredient_id,
-    grams,
-  }));
+  const rows = [...merged.values()].map((r) => ({ product_id: productId, ...r }));
   if (rows.length) {
     const { error: e3 } = await supabase.from("product_ingredients").insert(rows);
     if (e3) throw new Error(e3.message);
@@ -256,13 +266,15 @@ export async function duplicateProduct(id: number, newName?: string) {
 
   const { data: lines } = await supabase
     .from("product_ingredients")
-    .select("ingredient_id,grams")
+    .select("ingredient_id,grams,component,sort_order")
     .eq("product_id", id);
   if (lines && lines.length) {
     const rows = lines.map((l: any) => ({
       product_id: created!.id,
       ingredient_id: l.ingredient_id,
       grams: l.grams,
+      component: l.component ?? "",      // иначе копието губи секциите
+      sort_order: l.sort_order ?? 0,
     }));
     const { error: e2 } = await supabase.from("product_ingredients").insert(rows);
     if (e2) throw new Error(e2.message);

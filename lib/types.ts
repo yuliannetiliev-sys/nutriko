@@ -73,6 +73,10 @@ export type RecipeLine = {
   id?: number;
   ingredient_id: number;
   grams: number;
+  /** Секция в рецептата: Блат, Крем 1, Заливка… „" = без секция (старите рецепти). */
+  component: string;
+  /** Подредбата на секциите в рецептата. */
+  sort_order: number;
 };
 
 // Ред от рецептата заедно със съставката (за редактора)

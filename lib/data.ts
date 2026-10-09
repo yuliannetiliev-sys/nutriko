@@ -111,13 +111,16 @@ export async function getProduct(
   if (error || !p) return null;
   const { data: lines } = await supabase
     .from("product_ingredients")
-    .select("id,grams,ingredient_id, ingredients(*)")
+    .select("id,grams,ingredient_id,component,sort_order, ingredients(*)")
     .eq("product_id", id)
+    .order("sort_order")
     .order("id");
   const mapped: RecipeLineFull[] = (lines ?? []).map((l: any) => ({
     id: l.id,
     ingredient_id: l.ingredient_id,
     grams: num(l.grams),
+    component: l.component ?? "",
+    sort_order: l.sort_order ?? 0,
     ingredient: mapIngredient(l.ingredients),
   }));
   return { product: mapProduct(p), lines: mapped };
