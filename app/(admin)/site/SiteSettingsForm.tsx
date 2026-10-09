@@ -166,7 +166,7 @@ export default function SiteSettingsForm({ settings }: { settings: SiteSettings 
           <textarea
             className="w-full rounded-md border border-neutral-300 px-2 py-1 text-sm"
             rows={2}
-            placeholder="Пон–Пет 08:00–19:00&#10;Съб–Нед 09:00–18:00"
+            placeholder="Понеделник - Петък 10:00 - 19:30&#10;Събота - Неделя 10:00 - 18:00"
             value={v.hours}
             onChange={(e) => set("hours", e.target.value)}
           />
