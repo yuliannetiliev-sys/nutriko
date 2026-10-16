@@ -43,6 +43,8 @@ function mapProduct(p: any): Product {
     menu_weight_g: numOrNull(p.menu_weight_g),
     price_multiplier: numOrNull(p.price_multiplier),
     description: p.description ?? null,
+    tagline: p.tagline ?? null,
+    carbs_note: p.carbs_note ?? null,
     image_url: p.image_url ?? null,
     image_urls: p.image_urls ?? [],
     is_published: !!p.is_published,
@@ -151,6 +153,8 @@ export type MenuItem = {
   kcal_100g: number;
   gi_estimate: number | null;
   gl_serving: number | null;
+  tagline: string | null;
+  carbs_note: string | null;
 };
 
 function mapMenuItem(r: any): MenuItem {
@@ -179,6 +183,8 @@ function mapMenuItem(r: any): MenuItem {
     kcal_100g: num(r.kcal_100g),
     gi_estimate: numOrNull(r.gi_estimate),
     gl_serving: numOrNull(r.gl_serving),
+    tagline: r.tagline ?? null,
+    carbs_note: r.carbs_note ?? null,
   };
 }
 

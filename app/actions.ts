@@ -58,6 +58,8 @@ export type SavePayload = {
   show_macros: boolean;
   serving_unit: string;
   description: string | null;
+  tagline: string | null;
+  carbs_note: string | null;
   prep_notes: string | null;
   allergen_ids: number[];
   image_urls: string[];
@@ -95,6 +97,8 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
       show_macros: payload.show_macros,
       serving_unit: payload.serving_unit,
       description: payload.description,
+      tagline: payload.tagline,
+      carbs_note: payload.carbs_note,
       prep_notes: payload.prep_notes,
       allergen_ids: payload.allergen_ids,
       image_urls: payload.image_urls,
@@ -252,6 +256,8 @@ export async function duplicateProduct(id: number, newName?: string) {
       menu_weight_g: src.menu_weight_g,
       price_multiplier: src.price_multiplier,
       description: src.description,
+      tagline: src.tagline,
+      carbs_note: src.carbs_note,
       prep_notes: src.prep_notes,
       allergen_ids: src.allergen_ids,
       tags: src.tags,

@@ -14,6 +14,7 @@ import {
 } from "@/app/actions";
 import { slugify } from "@/lib/slug";
 import { compressImage } from "@/lib/compressImage";
+import { DEFAULT_TAGLINE } from "@/lib/tagline";
 
 // Обратни апострофи: текстът има истински нови редове, без escape-и.
 const POTVARZHDENIE = `Този продукт е публикуван, а няма избран нито един алерген.
@@ -26,6 +27,9 @@ type Row = { ingredient: Ingredient; qty: number; component: string };
 
 /** Готови имена за секции — само предложения, свободен текст също става. */
 const SECTION_SUGGESTIONS = ["Блат", "Крем", "Крем 1", "Крем 2", "Заливка", "Декорация", "Сироп"];
+
+/** Подсладители без въглехидрати — числото в таблицата ги пропуска, а клиентът пита точно за тях. */
+const SWEETENER_RE = /еритрит|стеви|ксилит|малтит|алулоз|сукралоз|монк/i;
 
 const f = (n: number, d = 2) =>
   n.toLocaleString("bg-BG", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -125,6 +129,8 @@ export default function RecipeEditor({
   const [tags, setTags] = useState((product.tags ?? []).join(", "));
   const [description, setDescription] = useState(product.description ?? "");
   const [prepNotes, setPrepNotes] = useState(product.prep_notes ?? "");
+  const [tagline, setTagline] = useState(product.tagline ?? "");
+  const [carbsNote, setCarbsNote] = useState(product.carbs_note ?? "");
   const [allergenIds, setAllergenIds] = useState<number[]>(product.allergen_ids ?? []);
 
   // Публикуван наш продукт БЕЗ алергени е тихата грешка, която боли най-много:
@@ -197,6 +203,32 @@ export default function RecipeEditor({
       ),
     [rows, servings, finishedWeight, multiplier, sellPrice, purchasePrice, wholePrice]
   );
+
+  // Откъде идват въглехидратите — за да е вярно пояснението, което клиентът чете.
+  // Една съставка може да е в няколко секции, затова се събира по съставка.
+  const carbSources = useMemo(() => {
+    const by = new Map<number, { name: string; g: number }>();
+    const sweet = new Map<number, { name: string; g: number }>();
+    for (const r of rows) {
+      const grams = unitToGrams(r.qty, r.ingredient);
+      if (grams <= 0) continue;
+      const c = (grams / 100) * (r.ingredient.carbs_100 ?? 0);
+      if (c <= 0 && SWEETENER_RE.test(r.ingredient.name)) {
+        const e = sweet.get(r.ingredient.id);
+        if (e) e.g += grams;
+        else sweet.set(r.ingredient.id, { name: r.ingredient.name, g: grams });
+      }
+      if (c <= 0) continue;
+      const e = by.get(r.ingredient.id);
+      if (e) e.g += c;
+      else by.set(r.ingredient.id, { name: r.ingredient.name, g: c });
+    }
+    const list = [...by.values()].sort((a, b) => b.g - a.g);
+    return { total: list.reduce((a, b) => a + b.g, 0), list, sweeteners: [...sweet.values()] };
+  }, [rows]);
+
+  // Колко от енергията дава протеинът — по това се вижда дали „протеинова" е вярно.
+  const proteinPct = totals.per100.k > 0 ? (totals.per100.p * 4 * 100) / totals.per100.k : 0;
 
   // Ръчна цена → автоматично преизчислява множителя (множител = цена ÷ себест./порция)
   function onSellPriceChange(v: string) {
@@ -282,6 +314,8 @@ export default function RecipeEditor({
       menu_weight_g: numOrNull(menuWeight),
       description: description.trim() || null,
       prep_notes: prepNotes.trim() || null,
+      tagline: tagline.trim() || null,
+      carbs_note: carbsNote.trim() || null,
       allergen_ids: allergenIds,
       image_urls: images,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
@@ -444,6 +478,28 @@ export default function RecipeEditor({
               </div>
               <div className="sm:col-span-2">
                 <label className={labelCls}>
+                  Надпис над името{" "}
+                  <span className="text-neutral-400">(публично — празно = според категорията)</span>
+                </label>
+                <input
+                  className={inputCls}
+                  value={tagline}
+                  placeholder={DEFAULT_TAGLINE[category] ?? "за тази категория няма надпис"}
+                  onChange={(e) => setTagline(e.target.value)}
+                />
+                {totals.per100.k > 0 && (
+                  <p className="mt-1 text-[11px] leading-relaxed text-neutral-500">
+                    Протеинът дава <b className="text-neutral-700">{f(proteinPct, 0)}%</b> от енергията.{" "}
+                    {proteinPct >= 20
+                      ? "Отговаря на „високо съдържание на протеин“ (от 20%)."
+                      : proteinPct >= 12
+                        ? "Отговаря на „източник на протеин“ (от 12%), но не на „високо съдържание“ (от 20%)."
+                        : "Под 12% — по-добре без „протеинов/а“ в надписа."}
+                  </p>
+                )}
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>
                   Описание <span className="text-neutral-400">(публично — показва се в менюто)</span>
                 </label>
                 <textarea
@@ -452,6 +508,39 @@ export default function RecipeEditor({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelCls}>
+                  Откъде са въглехидратите{" "}
+                  <span className="text-neutral-400">(публично — под хранителните стойности)</span>
+                </label>
+                <textarea
+                  className="w-full rounded-md border border-neutral-300 px-2 py-1 text-sm"
+                  rows={3}
+                  placeholder="Откъде идват и как се усвояват — напр. ядки, шоколад, мляко; с какво е подсладено."
+                  value={carbsNote}
+                  onChange={(e) => setCarbsNote(e.target.value)}
+                />
+                {carbSources.list.length > 0 && (
+                  <div className="mt-1.5 rounded-md bg-neutral-50 px-2.5 py-2 text-[11px] leading-relaxed text-neutral-600">
+                    <span className="font-medium text-neutral-700">
+                      По рецептата — {f(totals.perServing.c, 1)} g на порция идват от:
+                    </span>{" "}
+                    {carbSources.list.slice(0, 6).map((x, i) => (
+                      <span key={x.name}>
+                        {i > 0 && " · "}
+                        {x.name} <b className="tabular-nums">{f((x.g / carbSources.total) * 100, 0)}%</b>
+                      </span>
+                    ))}
+                    {carbSources.list.length > 6 && " · …"}
+                    {carbSources.sweeteners.length > 0 && (
+                      <span className="mt-1 block">
+                        Подсладители без въглехидрати:{" "}
+                        {carbSources.sweeteners.map((x) => `${x.name} ${f(x.g, 0)} g`).join(", ")}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="sm:col-span-2">
                 <label className={labelCls}>

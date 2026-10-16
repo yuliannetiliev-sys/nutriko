@@ -12,24 +12,13 @@ import {
 } from "@/lib/data";
 import { eur } from "@/lib/price";
 import { ARTICLE, articleHref } from "@/lib/links";
+import { taglineFor } from "@/lib/tagline";
 import Gallery from "./Gallery";
 import FollowBar from "../../FollowBar";
 
 export const dynamic = "force-dynamic";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nutriko.fit";
-
-/**
- * Изречението, което казва КАКВО е това — не с думите на менюто, а с думите,
- * с които хората търсят. „Протеинова торта" и „торта без захар" не се срещат
- * никъде в имената на продуктите, а точно тях пишат в Google.
- */
-const KAKVO: Record<string, string> = {
-  торта: "Протеинова торта без добавена захар",
-  вафла: "Протеинови вафли без добавена захар",
-  халва: "Протеинова халва без добавена захар",
-  шейк: "Протеинов шейк без добавена захар",
-};
 
 const OSHTE: Record<string, string> = {
   торта: "торти",
@@ -56,7 +45,7 @@ export async function generateMetadata({
   const m = await getPublicMenuItem(slug);
   if (!m) return { title: "Продуктът не е намерен" };
 
-  const kakvo = KAKVO[m.category ?? ""] ?? "Без добавена захар";
+  const kakvo = taglineFor(m) ?? "Без добавена захар";
   const macros = nasheProizvodstvo(m)
     ? `${m.protein_serving_g.toFixed(0)} g протеин и ${m.kcal_serving.toFixed(0)} kcal в ${porciya(m)}. `
     : "";
@@ -98,7 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const url = `${SITE_URL}/menu/${m.slug}`;
   const imgs = m.image_urls.length ? m.image_urls : m.image_url ? [m.image_url] : [];
   const catLabel = categories.find((c) => c.key === m.category)?.label ?? m.category ?? "Меню";
-  const kakvo = KAKVO[m.category ?? ""] ?? null;
+  const kakvo = taglineFor(m);
   const alerName = new Map(allergens.map((a) => [a.id, a.name]));
   const mine = [...m.allergen_ids].sort((a, b) => a - b);
 
@@ -265,6 +254,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         >
                           ?
                         </Link>
+                      </td>
+                    </tr>
+                  )}
+                  {m.carbs_note?.trim() && (
+                    // Хората питат „ще ми вдигне ли захарта" — числото въглехидрати
+                    // не отговаря на това, отговаря откъде идват.
+                    <tr className="border-t border-ink/10 bg-white/60">
+                      <td colSpan={3} className="px-3 py-3 text-left text-[13px] leading-relaxed text-ink/80">
+                        <span className="mb-1 block text-[11px] font-medium uppercase tracking-[0.12em] text-muted">
+                          Откъде са въглехидратите
+                        </span>
+                        <span className="whitespace-pre-line">{m.carbs_note.trim()}</span>
                       </td>
                     </tr>
                   )}

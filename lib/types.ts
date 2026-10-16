@@ -26,6 +26,8 @@ export type Product = {
   menu_weight_g: number | null; // ръчен грамаж на парче за менюто (само дисплей, не влияе на макросите)
   price_multiplier: number | null;
   description: string | null;
+  tagline: string | null; // надпис над името на страницата; NULL = по категорията
+  carbs_note: string | null; // публично: откъде са въглехидратите и как се усвояват
   image_url: string | null; // корица (= image_urls[0])
   image_urls: string[]; // галерия (цяла торта, парче, …)
   is_published: boolean;
