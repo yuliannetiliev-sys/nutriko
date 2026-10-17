@@ -47,12 +47,15 @@ export default function RecipeEditor({
   catalog,
   allergens,
   categories,
+  menu,
 }: {
   product: Product;
   initialLines: RecipeLineFull[];
   catalog: Ingredient[];
   allergens: Allergen[];
   categories: Category[];
+  /** публикуваното меню в реда, в който се показва — за подредбата */
+  menu: { slug: string; name: string; category: string | null; menu_order: number | null }[];
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -131,6 +134,7 @@ export default function RecipeEditor({
   const [prepNotes, setPrepNotes] = useState(product.prep_notes ?? "");
   const [tagline, setTagline] = useState(product.tagline ?? "");
   const [carbsNote, setCarbsNote] = useState(product.carbs_note ?? "");
+  const [menuOrder, setMenuOrder] = useState(product.menu_order != null ? String(product.menu_order) : "");
   const [allergenIds, setAllergenIds] = useState<number[]>(product.allergen_ids ?? []);
 
   // Публикуван наш продукт БЕЗ алергени е тихата грешка, която боли най-много:
@@ -227,6 +231,30 @@ export default function RecipeEditor({
     return { total: list.reduce((a, b) => a + b.g, 0), list, sweeteners: [...sweet.values()] };
   }, [rows]);
 
+  // Къде застава продуктът в категорията си — вижда се, докато пишеш числото.
+  const orderPreview = useMemo(() => {
+    const n = numOrNull(menuOrder);
+    const self = {
+      slug: product.slug,
+      name: name.trim() || product.name,
+      menu_order: n == null ? null : Math.round(n),
+      self: true,
+    };
+    const list = [
+      ...menu
+        .filter((m) => m.category === category && m.slug !== product.slug)
+        .map((m) => ({ slug: m.slug, name: m.name, menu_order: m.menu_order, self: false })),
+      self,
+    ].sort(
+      (a, b) =>
+        (a.menu_order ?? Infinity) - (b.menu_order ?? Infinity) || a.name.localeCompare(b.name, "bg")
+    );
+    const i = list.findIndex((m) => m.self);
+    const label = (m?: { name: string; menu_order: number | null }) =>
+      m ? `${m.name} (${m.menu_order ?? "по азбука"})` : null;
+    return { list, pos: i + 1, before: label(list[i - 1]), after: label(list[i + 1]) };
+  }, [menu, category, menuOrder, name, product.slug, product.name]);
+
   // Колко от енергията дава протеинът — по това се вижда дали „протеинова" е вярно.
   const proteinPct = totals.per100.k > 0 ? (totals.per100.p * 4 * 100) / totals.per100.k : 0;
 
@@ -316,6 +344,8 @@ export default function RecipeEditor({
       prep_notes: prepNotes.trim() || null,
       tagline: tagline.trim() || null,
       carbs_note: carbsNote.trim() || null,
+      // Колоната е integer: „1.5" щеше да гръмне при запис, затова се закръгля тук.
+      menu_order: numOrNull(menuOrder) == null ? null : Math.round(numOrNull(menuOrder)!),
       allergen_ids: allergenIds,
       image_urls: images,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
@@ -433,6 +463,37 @@ export default function RecipeEditor({
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className={labelCls}>
+                  Подредба в менюто <span className="text-neutral-400">(по-малкото е по-горе)</span>
+                </label>
+                <input
+                  className={inputCls}
+                  inputMode="numeric"
+                  placeholder="празно = по азбука, след подредените"
+                  value={menuOrder}
+                  onChange={(e) => setMenuOrder(e.target.value)}
+                />
+                {orderPreview.list.length > 1 && (
+                  <details className="mt-1 text-[11px] leading-relaxed text-neutral-500">
+                    <summary className="cursor-pointer select-none">
+                      Място {orderPreview.pos} от {orderPreview.list.length}
+                      {orderPreview.before && <> · след {orderPreview.before}</>}
+                      {orderPreview.after && <> · преди {orderPreview.after}</>}
+                    </summary>
+                    <ol className="mt-1 list-decimal pl-5">
+                      {orderPreview.list.map((m) => (
+                        <li key={m.slug} className={m.self ? "font-semibold text-neutral-800" : ""}>
+                          {m.name} <span className="text-neutral-400">{m.menu_order ?? "—"}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="mt-1 text-neutral-400">
+                      Съвет: стъпка по 10 (10, 20, 30) — после се вмъква лесно между тях.
+                    </p>
+                  </details>
+                )}
               </div>
               <div>
                 <label className={labelCls}>Порции</label>

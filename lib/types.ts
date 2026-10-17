@@ -28,6 +28,7 @@ export type Product = {
   description: string | null;
   tagline: string | null; // надпис над името на страницата; NULL = по категорията
   carbs_note: string | null; // публично: откъде са въглехидратите и как се усвояват
+  menu_order: number | null; // подредба в категорията: по-малкото е по-горе; NULL = по азбука
   image_url: string | null; // корица (= image_urls[0])
   image_urls: string[]; // галерия (цяла торта, парче, …)
   is_published: boolean;

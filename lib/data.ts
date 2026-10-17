@@ -45,6 +45,7 @@ function mapProduct(p: any): Product {
     description: p.description ?? null,
     tagline: p.tagline ?? null,
     carbs_note: p.carbs_note ?? null,
+    menu_order: numOrNull(p.menu_order),
     image_url: p.image_url ?? null,
     image_urls: p.image_urls ?? [],
     is_published: !!p.is_published,
@@ -155,6 +156,7 @@ export type MenuItem = {
   gl_serving: number | null;
   tagline: string | null;
   carbs_note: string | null;
+  menu_order: number | null;
 };
 
 function mapMenuItem(r: any): MenuItem {
@@ -185,12 +187,18 @@ function mapMenuItem(r: any): MenuItem {
     gl_serving: numOrNull(r.gl_serving),
     tagline: r.tagline ?? null,
     carbs_note: r.carbs_note ?? null,
+    menu_order: numOrNull(r.menu_order),
   };
 }
 
 // Публичното меню — само публикувани, неархивирани (без цени/маржин вътрешни)
 export async function listPublicMenu(): Promise<MenuItem[]> {
-  const { data, error } = await db().from("public_menu_v").select("*").order("name");
+  // Ръчната подредба първа; неподредените след тях, по азбука.
+  const { data, error } = await db()
+    .from("public_menu_v")
+    .select("*")
+    .order("menu_order", { ascending: true, nullsFirst: false })
+    .order("name");
   if (error) throw error;
   return (data ?? []).map(mapMenuItem);
 }

@@ -60,6 +60,7 @@ export type SavePayload = {
   description: string | null;
   tagline: string | null;
   carbs_note: string | null;
+  menu_order: number | null;
   prep_notes: string | null;
   allergen_ids: number[];
   image_urls: string[];
@@ -99,6 +100,7 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
       description: payload.description,
       tagline: payload.tagline,
       carbs_note: payload.carbs_note,
+      menu_order: payload.menu_order,
       prep_notes: payload.prep_notes,
       allergen_ids: payload.allergen_ids,
       image_urls: payload.image_urls,
@@ -258,6 +260,7 @@ export async function duplicateProduct(id: number, newName?: string) {
       description: src.description,
       tagline: src.tagline,
       carbs_note: src.carbs_note,
+      menu_order: src.menu_order,
       prep_notes: src.prep_notes,
       allergen_ids: src.allergen_ids,
       tags: src.tags,
