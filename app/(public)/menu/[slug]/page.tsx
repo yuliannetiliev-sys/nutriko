@@ -13,6 +13,7 @@ import {
 import { eur } from "@/lib/price";
 import { ARTICLE, articleHref } from "@/lib/links";
 import { taglineFor } from "@/lib/tagline";
+import { cap, unitsFor } from "@/lib/units";
 import Gallery from "./Gallery";
 import FollowBar from "../../FollowBar";
 
@@ -28,7 +29,7 @@ const OSHTE: Record<string, string> = {
 };
 
 function porciya(m: MenuItem): string {
-  return m.category === "торта" ? "парчето" : "порцията";
+  return unitsFor(m.category).oneThe;
 }
 
 /** Продукти без макроси са купени отвън (вода, кафе, чай) — нямат какво да кажат. */
@@ -173,15 +174,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {eur(m.price_eur)}
               </span>
               <span className="text-sm text-muted">
-                за {m.category === "торта" ? "парче" : "порция"}
+                за {unitsFor(m.category).one}
                 {m.serving_weight_g > 0 && ` ~${m.serving_weight_g} ${m.serving_unit}`}
               </span>
             </p>
           )}
           {m.whole_price_eur != null && m.servings > 1 && (
             <p className="mt-1 text-sm text-muted">
-              {m.category === "торта" ? "Цяла торта" : "Цяло"} ({m.servings}{" "}
-              {m.category === "торта" ? "парчета" : "порции"}):{" "}
+              {unitsFor(m.category).whole} ({m.servings} {unitsFor(m.category).many}):{" "}
               <span className="font-medium text-ink/80">{eur(m.whole_price_eur)}</span>
             </p>
           )}
@@ -208,7 +208,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   <tr className="border-b border-ink/10 text-xs uppercase tracking-wide text-muted">
                     <th className="px-3 py-2 text-left font-medium"> </th>
                     <th className="px-3 py-2 text-right font-medium">
-                      {m.category === "торта" ? "Парче" : "Порция"}
+                      {cap(unitsFor(m.category).one)}
                     </th>
                     <th className="px-3 py-2 text-right font-medium">100 {m.serving_unit}</th>
                   </tr>
@@ -243,7 +243,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                           <>
                             {" · гликемичен товар "}
                             <b className="font-medium text-ink/80 tabular-nums">~{m.gl_serving}</b>
-                            {` на ${m.category === "торта" ? "парче" : "порция"}`}
+                            {` на ${unitsFor(m.category).one}`}
                           </>
                         )}
                         <span className="text-muted/70"> (референтни)</span>{" "}

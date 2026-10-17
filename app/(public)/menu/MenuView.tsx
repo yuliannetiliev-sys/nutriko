@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MenuItem } from "@/lib/data";
 import { eur } from "@/lib/price";
+import { unitsFor } from "@/lib/units";
 import { hasProductPage, productHref } from "@/lib/links";
 
 type Group = { key: string; label: string; description?: string | null; items: MenuItem[] };
@@ -255,8 +256,7 @@ function Item({ m, onOpen }: { m: MenuItem; onOpen: (images: string[], i?: numbe
   const whole =
     m.whole_price_eur != null && m.servings > 1 ? (
       <p className="mt-1 text-xs text-muted">
-        {m.category === "торта" ? "Цяла торта" : "Цяло"} ({m.servings}{" "}
-        {m.category === "торта" ? "парчета" : "порции"}):{" "}
+        {unitsFor(m.category).whole} ({m.servings} {unitsFor(m.category).many}):{" "}
         <span className="font-medium text-ink/80">{eur(m.whole_price_eur)}</span>
       </p>
     ) : null;
