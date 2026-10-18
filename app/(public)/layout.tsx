@@ -142,6 +142,12 @@ export default async function PublicLayout({
             <Link href="/poveritelnost" className="hover:text-white">
               Поверителност
             </Link>
+            <Link href="/usloviya" className="hover:text-white">
+              Общи условия
+            </Link>
+            <Link href="/dostavka" className="hover:text-white">
+              Доставка и връщане
+            </Link>
           </div>
         </div>
       </footer>

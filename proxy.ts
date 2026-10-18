@@ -3,7 +3,10 @@ import { createServerClient } from "@supabase/ssr";
 
 // Дублира се в lib/supabase.ts (ADMIN_EMAILS) и public.is_admin() в базата.
 const ADMIN_EMAILS = ["yulian.net.iliev@gmail.com", "samuil.slavev@gmail.com"];
-const ADMIN_PATHS = ["/products", "/ingredients", "/categories", "/site", "/articles", "/content"];
+const ADMIN_PATHS = [
+  "/products", "/ingredients", "/categories", "/site", "/articles", "/content",
+  "/orders", "/shop", "/api/admin",
+];
 
 // Next 16 преименува „middleware" → „proxy" (същата логика: пази админ рутовете преди рендер).
 export async function proxy(req: NextRequest) {

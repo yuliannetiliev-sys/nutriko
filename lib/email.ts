@@ -1,3 +1,8 @@
+import { COMPANY } from "@/lib/company";
+import { eur } from "@/lib/price";
+import { DELIVERY_LABEL } from "@/lib/shop-common";
+import { deliveryLine, type Order } from "@/lib/orders";
+
 // Изпращане на транзакционни имейли през Resend (директно през REST API, без SDK).
 // Ползва се за известяване на собственика при ново запитване от контактната форма.
 
@@ -77,4 +82,130 @@ export async function sendContactNotification(opts: {
   } catch (e) {
     return { sent: false, error: e instanceof Error ? e.message : "Непозната грешка" };
   }
+}
+
+// ── Онлайн магазин ─────────────────────────────────────────────────────────
+
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nutriko.fit";
+
+async function send(body: Record<string, unknown>): Promise<{ sent: boolean; error?: string }> {
+  // За локални проби: имейлът се пише в конзолата, не се праща.
+  if (process.env.SHOP_EMAIL_DRY_RUN === "1") {
+    console.log("[email dry-run]", body.to, "—", body.subject);
+    const dir = process.env.SHOP_EMAIL_DRY_RUN_DIR;
+    if (dir) {
+      const { writeFile } = await import("node:fs/promises");
+      const name = String(body.subject).replace(/[^\p{L}\p{N}]+/gu, "-").slice(0, 60);
+      await writeFile(`${dir}/${Date.now()}-${name}.html`, String(body.html ?? ""), "utf8").catch(() => {});
+    }
+    return { sent: true };
+  }
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return { sent: false, error: "RESEND_API_KEY липсва" };
+  try {
+    const res = await fetch(RESEND_ENDPOINT, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: FROM, ...body }),
+    });
+    if (!res.ok) return { sent: false, error: `Resend ${res.status}: ${(await res.text()).slice(0, 300)}` };
+    return { sent: true };
+  } catch (e) {
+    return { sent: false, error: e instanceof Error ? e.message : "Непозната грешка" };
+  }
+}
+
+const when = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleString("bg-BG", { timeZone: "Europe/Sofia", dateStyle: "long", timeStyle: "short" })
+    : "";
+
+function itemsTable(o: Order): string {
+  const row = (l: string, r: string, strong = false) =>
+    `<tr><td style="padding:6px 0;${strong ? "font-weight:600" : ""}">${l}</td>` +
+    `<td style="padding:6px 0;text-align:right;white-space:nowrap;${strong ? "font-weight:600" : ""}">${r}</td></tr>`;
+  return (
+    `<table style="width:100%;border-collapse:collapse;font-size:15px">` +
+    o.items.map((i) => row(`${i.qty} × ${esc(i.title)}`, eur(i.line_total_eur))).join("") +
+    row(o.shipping_eur > 0 ? "Доставка" : "Доставка (безплатна)", eur(o.shipping_eur)) +
+    `<tr><td colspan="2" style="border-top:1px solid #e5e7eb"></td></tr>` +
+    row("Общо", eur(o.total_eur), true) +
+    `</table>`
+  );
+}
+
+// Цял документ с viewport — иначе пощата на телефона го показва смален като за компютър.
+const wrap = (inner: string) =>
+  `<!doctype html><html lang="bg"><head><meta charset="utf-8">` +
+  `<meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;padding:16px">` +
+  `<div style="font-family:system-ui,Arial,sans-serif;font-size:15px;color:#1f2937;line-height:1.6;max-width:560px">${inner}</div>` +
+  `</body></html>`;
+
+const sellerBlock =
+  `<p style="margin:20px 0 0;font-size:12px;color:#6b7280;line-height:1.5">` +
+  `${COMPANY.name} · ЕИК ${COMPANY.eik}<br>${COMPANY.seat}<br>` +
+  `${COMPANY.phone} · ${COMPANY.email} · ${COMPANY.site}</p>`;
+
+/** До клиента веднага след плащането. Той е и документът за поръчката от е-магазина. */
+export async function sendOrderConfirmation(o: Order) {
+  const html = wrap(
+    `<h2 style="margin:0 0 8px;color:#1f4733">Благодарим, ${esc(o.customer_name.split(" ")[0])}!</h2>` +
+      `<p style="margin:0 0 14px">Поръчката ти е приета и платена. Изпращаме я до 1 работен ден — ` +
+      `ще получиш втори имейл с номера за проследяване от Спиди.</p>` +
+      itemsTable(o) +
+      `<p style="margin:16px 0 4px"><b>Доставка:</b> ${DELIVERY_LABEL[o.delivery_type]} — ${esc(deliveryLine(o))}</p>` +
+      `<p style="margin:0 0 4px"><b>Получател:</b> ${esc(o.customer_name)}, ${esc(o.phone)}</p>` +
+      `<p style="margin:0 0 4px"><b>Плащане:</b> банкова карта, през Stripe` +
+      (o.stripe_payment_intent ? ` · транзакция ${esc(o.stripe_payment_intent)}` : "") +
+      `</p>` +
+      `<div style="margin:18px 0 0;padding:12px 14px;background:#f6f5f1;border-radius:10px;font-size:13px">` +
+      `<b>Документ за поръчка № ${o.number}</b><br>Електронен магазин ${COMPANY.site} · ${when(o.paid_at ?? o.created_at)}</div>` +
+      `<p style="margin:14px 0 0;font-size:13px">Въпроси? Просто отговори на този имейл. ` +
+      `<a href="${SITE}/usloviya" style="color:#1f4733">Общи условия</a> · ` +
+      `<a href="${SITE}/dostavka" style="color:#1f4733">Доставка и връщане</a></p>` +
+      sellerBlock
+  );
+  return send({
+    to: [o.email],
+    reply_to: COMPANY.email,
+    subject: `${o.is_test ? "[ТЕСТ] " : ""}Поръчка ${o.number} е приета — ${COMPANY.brand}`,
+    html,
+  });
+}
+
+/** До собственика — да опакова. */
+export async function sendNewOrderAlert(o: Order, to: string | null) {
+  const html = wrap(
+    `<h2 style="margin:0 0 8px;color:#1f4733">Нова поръчка ${o.number}</h2>` +
+      itemsTable(o) +
+      `<p style="margin:16px 0 4px"><b>Клиент:</b> ${esc(o.customer_name)} · ${esc(o.phone)} · ${esc(o.email)}</p>` +
+      `<p style="margin:0 0 4px"><b>Доставка:</b> ${DELIVERY_LABEL[o.delivery_type]} — ${esc(deliveryLine(o))}</p>` +
+      (o.customer_note ? `<p style="margin:0 0 4px"><b>Бележка:</b> ${esc(o.customer_note)}</p>` : "") +
+      `<p style="margin:16px 0 0"><a href="${SITE}/orders/${o.id}" style="display:inline-block;background:#1f4733;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Отвори в админа</a></p>`
+  );
+  return send({
+    to: [looksLikeEmail(to) ? to.trim() : FALLBACK_TO],
+    reply_to: o.email,
+    subject: `${o.is_test ? "[ТЕСТ] " : ""}🛒 Нова поръчка ${o.number} — ${eur(o.total_eur)}`,
+    html,
+  });
+}
+
+/** До клиента, щом има товарителница. */
+export async function sendShippedEmail(o: Order, trackingUrl: string) {
+  const html = wrap(
+    `<h2 style="margin:0 0 8px;color:#1f4733">Поръчката ти пътува</h2>` +
+      `<p style="margin:0 0 12px">Поръчка <b>${o.number}</b> е предадена на Спиди. Номер на товарителницата: <b>${esc(o.waybill_id ?? "")}</b>.</p>` +
+      `<p style="margin:0 0 16px"><a href="${trackingUrl}" style="display:inline-block;background:#1f4733;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none">Проследи пратката</a></p>` +
+      `<p style="margin:0 0 4px"><b>Доставка:</b> ${DELIVERY_LABEL[o.delivery_type]} — ${esc(deliveryLine(o))}</p>` +
+      `<p style="margin:14px 0 0;font-size:13px">Пази вафлите на сухо и хладно място, до 25 °C. Да ти е сладко!</p>` +
+      sellerBlock
+  );
+  return send({
+    to: [o.email],
+    reply_to: COMPANY.email,
+    subject: `Поръчка ${o.number} е изпратена — ${COMPANY.brand}`,
+    html,
+  });
 }

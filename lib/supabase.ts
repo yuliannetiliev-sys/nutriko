@@ -18,6 +18,15 @@ export function db() {
   return createClient(URL!, ANON!, { auth: { persistSession: false } });
 }
 
+// Сървърен клиент със service role ключа — заобикаля RLS. САМО на сървъра:
+// записът на онлайн поръчки (от checkout и от Stripe webhook-а), където няма
+// вписан потребител. Без ключа връща null и магазинът отказва поръчки, вместо да гръмне.
+export function serviceDb() {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) return null;
+  return createClient(URL!, key, { auth: { persistSession: false } });
+}
+
 // Клиент със сесия от бисквитките — става „authenticated" при вписан админ.
 export async function getDb() {
   const store = await cookies();
@@ -41,6 +50,12 @@ export async function getUser() {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
+}
+
+/** Влязъл ли е админ — без грешка, за публични страници, които на админа показват повече. */
+export async function isAdmin(): Promise<boolean> {
+  const user = await getUser().catch(() => null);
+  return !!user?.email && ADMIN_EMAILS.includes(user.email);
 }
 
 export async function requireAdmin() {
