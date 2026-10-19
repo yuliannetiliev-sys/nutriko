@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getActiveShopItem, getShopSettings, type ShopItem } from "@/lib/shop";
+import { getActiveShopItem, adminGetShopItemBySlug, getShopSettings, type ShopItem } from "@/lib/shop";
 import { isAdmin } from "@/lib/supabase";
 import { stripeMode } from "@/lib/stripe";
 import { deliveryOptions, nutr, splitBold, type NutrKind } from "@/lib/shop-common";
@@ -13,7 +13,8 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const [item, s] = await Promise.all([getActiveShopItem(slug), getShopSettings()]);
+  const [found, s, admin] = await Promise.all([getActiveShopItem(slug), getShopSettings(), isAdmin()]);
+  const item = found ?? (admin ? await adminGetShopItemBySlug(slug) : null);
   if (!item) return { title: "Няма такъв продукт" };
   const title = `${item.title} — ${item.pack_label.toLowerCase()} с доставка`;
   const description = item.description ?? `${item.title} от Нутрико с доставка със Спиди до цяла България.`;
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description,
     alternates: { canonical: `/magazin/${item.slug}` },
     // Докато магазинът е затворен, страницата няма място в Google.
-    ...(s.enabled ? {} : { robots: { index: false, follow: false } }),
+    ...(s.enabled && item.is_active ? {} : { robots: { index: false, follow: false } }),
     openGraph: {
       title: `${title} · Нутрико`,
       description,
@@ -103,8 +104,11 @@ export default async function ShopItemPage({
 }) {
   const { slug } = await params;
   const { prekasnato } = await searchParams;
-  const [item, settings, admin] = await Promise.all([getActiveShopItem(slug), getShopSettings(), isAdmin()]);
+  const [found, settings, admin] = await Promise.all([getActiveShopItem(slug), getShopSettings(), isAdmin()]);
+  // Скрит артикул: клиентите получават „няма такава страница“, а админът — страницата с надпис.
+  const item = found ?? (admin ? await adminGetShopItemBySlug(slug) : null);
   if (!item) notFound();
+  const hidden = !item.is_active;
 
   const options = deliveryOptions(settings);
   // Изключен магазин: клиентите виждат „скоро“, а влезлият админ — формата, за пробна поръчка.
@@ -123,11 +127,17 @@ export default async function ShopItemPage({
         <span className="text-ink/70">Онлайн поръчка</span>
       </nav>
 
-      {admin && (!settings.enabled || mode !== "live") && (
+      {admin && (hidden || !settings.enabled || mode !== "live") && (
         <div className="mb-6 space-y-1 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {hidden && (
+            <p>
+              <b>Скрит артикул — вижда го само админ.</b> За клиентите тази страница не съществува. За пробна поръчка
+              го направи „активен“ в Админ → Магазин.
+            </p>
+          )}
           {!settings.enabled && (
             <p>
-              <b>Вижда го само админ.</b> Магазинът е изключен — клиентите виждат „скоро“ и не могат да поръчат.
+              <b>Магазинът е изключен</b> — клиентите не могат да поръчат, а ти като админ виждаш формата.
             </p>
           )}
           {mode === "test" && (

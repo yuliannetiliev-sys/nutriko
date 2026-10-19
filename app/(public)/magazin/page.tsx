@@ -2,7 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { listActiveShopItems, getShopSettings } from "@/lib/shop";
+import { listActiveShopItems, adminListShopItems, getShopSettings } from "@/lib/shop";
+import { isAdmin } from "@/lib/supabase";
 import { eur } from "@/lib/price";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Докато има един артикул, списъкът само пречи — водим направо към него.
 export default async function ShopIndex() {
-  const items = await listActiveShopItems();
+  // Админът вижда и скритите артикули — за прегледа преди пускане.
+  const items = (await isAdmin()) ? await adminListShopItems() : await listActiveShopItems();
   if (items.length === 1) redirect(`/magazin/${items[0].slug}`);
 
   return (

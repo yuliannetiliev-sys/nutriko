@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 
 export default async function DeliveryPage() {
   const s = await getShopSettings();
-  const options = deliveryOptions(s);
+  // Цените излизат чак с отварянето на магазина — дотогава в базата може да стоят чернови.
+  const options = s.enabled ? deliveryOptions(s) : [];
   const h2 = "font-display text-2xl font-semibold text-ink";
 
   return (
@@ -37,7 +38,7 @@ export default async function DeliveryPage() {
           ) : (
             <p className="mt-2 text-muted">Цените за доставка ще бъдат обявени с отварянето на онлайн поръчките.</p>
           )}
-          {s.freeFrom != null && <p className="mt-2">Безплатна доставка при поръчка от {eur(s.freeFrom)}.</p>}
+          {s.enabled && s.freeFrom != null && <p className="mt-2">Безплатна доставка при поръчка от {eur(s.freeFrom)}.</p>}
         </section>
 
         <section>

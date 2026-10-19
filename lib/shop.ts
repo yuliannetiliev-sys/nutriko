@@ -210,6 +210,13 @@ export async function adminListShopItems(): Promise<ShopItem[]> {
   return (data ?? []).map(mapShopItem);
 }
 
+/** По адрес, вкл. скритите — през сесията (RLS пуска само админите). За прегледа преди пускане. */
+export async function adminGetShopItemBySlug(slug: string): Promise<ShopItem | null> {
+  const supabase = await getDb();
+  const { data } = await supabase.from("shop_items").select("*").eq("slug", slug).maybeSingle();
+  return data ? mapShopItem(data) : null;
+}
+
 export async function adminGetShopItem(id: number): Promise<ShopItem | null> {
   const supabase = await getDb();
   const { data } = await supabase.from("shop_items").select("*").eq("id", id).maybeSingle();
