@@ -56,6 +56,7 @@ function mapProduct(p: any): Product {
     tags: p.tags ?? [],
     prep_notes: p.prep_notes ?? null,
     allergen_ids: (p.allergen_ids ?? []).map(Number),
+    updated_at: p.updated_at ?? null,
   };
 }
 

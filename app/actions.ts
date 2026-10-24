@@ -66,11 +66,44 @@ export type SavePayload = {
   image_urls: string[];
   tags: string[];
   lines: { ingredient_id: number; grams: number; component: string; sort_order: number }[];
+  /** updated_at на версията, отворена в редактора. Друго в базата → записът се спира. */
+  expected_updated_at?: string | null;
 };
 
-export async function saveRecipe(productId: number, payload: SavePayload) {
+export type SaveResult =
+  | { ok: true; updated_at: string | null }
+  | { ok: false; error: string; conflict?: boolean };
+
+const sofiaTime = (iso: string) =>
+  new Date(iso).toLocaleString("bg-BG", {
+    timeZone: "Europe/Sofia",
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+const conflictMsg = (iso: string | null) =>
+  `Продуктът е променен${iso ? ` (${sofiaTime(iso)})` : ""}, след като отвори тази страница. ` +
+  "Записът е спрян, за да не изтрие новите промени — презареди страницата (F5) и направи промените си отново.";
+
+// Грешките се ВРЪЩАТ, не се хвърлят: в production Next маскира хвърлените с общ текст.
+export async function saveRecipe(productId: number, payload: SavePayload): Promise<SaveResult> {
   await requireAdmin();
   const supabase = await getDb();
+
+  // Защита от презапис със стара версия: редакторът е отворен преди промяна от друго
+  // място (SQL, друг таб) и натиснатият „Запази“ връща всички полета към старото.
+  // Случи се на 24.10.2026 — „Баварски крем“ загуби адреса и снимките си.
+  const { data: cur, error: e0 } = await supabase
+    .from("products")
+    .select("updated_at")
+    .eq("id", productId)
+    .single();
+  if (e0 || !cur) return { ok: false, error: e0?.message ?? "Продуктът не е намерен." };
+  const expected = payload.expected_updated_at ?? null;
+  if (expected && cur.updated_at && Date.parse(cur.updated_at) !== Date.parse(expected))
+    return { ok: false, conflict: true, error: conflictMsg(cur.updated_at) };
 
   // Автоматичният адрес се разминава тихо при сблъсък („Нов продукт“ два пъти).
   // Ръчно написаният — не: там човекът трябва да разбере, че адресът е зает.
@@ -80,7 +113,7 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
     slug = uniqueSlug(payload.slug, (data ?? []).map((r: any) => r.slug as string));
   }
 
-  const { error: e1 } = await supabase
+  let upd = supabase
     .from("products")
     .update({
       name: payload.name,
@@ -108,19 +141,25 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
       tags: payload.tags,
     })
     .eq("id", productId);
+  // Проверката и записът — в една заявка: ако някой е записал между двете, 0 реда.
+  if (expected && cur.updated_at) upd = upd.eq("updated_at", cur.updated_at);
+  const { data: written, error: e1 } = await upd.select("id");
   // 23505 = UNIQUE(slug): друг продукт вече заема този адрес
   if (e1)
-    throw new Error(
-      e1.code === "23505"
-        ? `Адресът „${payload.slug}“ вече се използва от друг продукт.`
-        : e1.message
-    );
+    return {
+      ok: false,
+      error:
+        e1.code === "23505"
+          ? `Адресът „${payload.slug}“ вече се използва от друг продукт.`
+          : e1.message,
+    };
+  if (!written?.length) return { ok: false, conflict: true, error: conflictMsg(null) };
 
   const { error: e2 } = await supabase
     .from("product_ingredients")
     .delete()
     .eq("product_id", productId);
-  if (e2) throw new Error(e2.message);
+  if (e2) return { ok: false, error: e2.message };
 
   // Сумират се само редове от ЕДНА И СЪЩА секция. Еритритолът за блата и
   // този за крема са два отделни реда — затова ключът включва и компонента.
@@ -143,12 +182,19 @@ export async function saveRecipe(productId: number, payload: SavePayload) {
   const rows = [...merged.values()].map((r) => ({ product_id: productId, ...r }));
   if (rows.length) {
     const { error: e3 } = await supabase.from("product_ingredients").insert(rows);
-    if (e3) throw new Error(e3.message);
+    if (e3) return { ok: false, error: e3.message };
   }
+
+  // Новата версия (тригерите я вдигнаха и от съставките) — редакторът продължава от нея.
+  const { data: after } = await supabase
+    .from("products")
+    .select("updated_at")
+    .eq("id", productId)
+    .single();
 
   revalidatePath("/products");
   revalidatePath(`/products/${productId}`);
-  return { ok: true };
+  return { ok: true, updated_at: after?.updated_at ?? null };
 }
 
 export async function uploadProductImage(

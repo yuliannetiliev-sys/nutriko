@@ -61,6 +61,9 @@ export default function RecipeEditor({
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  // Версията, от която е заредена страницата; след всеки успешен запис — новата.
+  const [version, setVersion] = useState<string | null>(product.updated_at ?? null);
+  const [conflict, setConflict] = useState(false);
 
   const [name, setName] = useState(product.name);
   // Адресът следва името, докато продуктът НЕ е публикуван — тогава още няма
@@ -355,10 +358,17 @@ export default function RecipeEditor({
         component: r.component,
         sort_order: Math.max(0, sections.indexOf(r.component)),
       })),
+      expected_updated_at: version,
     };
     startTransition(async () => {
       try {
-        await saveRecipe(product.id, payload);
+        const res = await saveRecipe(product.id, payload);
+        if (!res.ok) {
+          setErr(res.error);
+          setConflict(!!res.conflict);
+          return;
+        }
+        setVersion(res.updated_at);
         setSaved(true);
         router.refresh();
       } catch (e) {
@@ -402,7 +412,16 @@ export default function RecipeEditor({
         </Link>
         <div className="flex items-center gap-3">
           {saved && <span className="text-sm text-emerald-600">Запазено ✓</span>}
-          {err && <span className="text-sm text-red-600">{err}</span>}
+          {err && <span className="max-w-md text-sm text-red-600">{err}</span>}
+          {conflict && (
+            <button
+              onClick={() => window.location.reload()}
+              className="h-9 shrink-0 rounded-md bg-red-600 px-3 text-sm font-medium text-white hover:bg-red-700"
+              title="Зарежда актуалната версия — непрописаните промени на тази страница се губят"
+            >
+              Презареди
+            </button>
+          )}
           <button
             onClick={onCopy}
             disabled={pending}
