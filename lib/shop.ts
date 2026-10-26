@@ -102,6 +102,7 @@ export async function getShopSettings(): Promise<ShopSettings> {
       address: numOrNull(r.shop_shipping_address_eur),
     },
     freeFrom: numOrNull(r.shop_free_shipping_from_eur),
+    napEshopNumber: (r.nap_eshop_number ?? "").trim() || null,
   };
 }
 

@@ -17,6 +17,8 @@ export type ShopSettings = {
   shipping: Record<DeliveryType, number | null>;
   /** над тази сума на артикулите доставката е безплатна; null = никога */
   freeFrom: number | null;
+  /** Номерът на е-магазина от НАП (RF…), след подаване на прил. № 33. Влиза в QR кода на документа. */
+  napEshopNumber: string | null;
 };
 
 export type DeliveryOption = { type: DeliveryType; label: string; price: number };

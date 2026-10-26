@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getShopSettings, adminListShopItems } from "@/lib/shop";
 import { eur } from "@/lib/price";
 import { stripeMode } from "@/lib/stripe";
+import { sofiaParts } from "@/lib/sale-doc";
 import ShopSettingsForm from "./ShopSettingsForm";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,10 @@ export default async function ShopAdminPage() {
   const [settings, items] = await Promise.all([getShopSettings(), adminListShopItems()]);
   const missing = missingEnv();
   const mode = stripeMode();
+  // Месечният файл за НАП: миналият месец (за подаване до 15-о) и текущият (за преглед).
+  const [y, m] = sofiaParts(new Date().toISOString()).date.split("-").map(Number);
+  const prev = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+  const cur = `${y}-${String(m).padStart(2, "0")}`;
 
   return (
     <div className="space-y-5">
@@ -61,8 +66,25 @@ export default async function ShopAdminPage() {
           apt: settings.shipping.apt?.toString() ?? "",
           address: settings.shipping.address?.toString() ?? "",
           freeFrom: settings.freeFrom?.toString() ?? "",
+          nap: settings.napEshopNumber ?? "",
         }}
       />
+
+      <div className="rounded-lg border border-neutral-200 bg-white p-5 text-sm">
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-400">НАП — месечен файл (Приложение № 38)</p>
+        <p className="mt-2 text-neutral-600">
+          Всеки месец до <b>15-о число</b> се подава файлът за изпратените през предходния месец поръчки: портала на НАП
+          (portal.nra.bg) → подаване на стандартизиран одиторски файл, с КЕП на фирмата.
+        </p>
+        <p className="mt-3 flex flex-wrap gap-3">
+          <a href={`/api/admin/nap-audit?ym=${prev}`} className="rounded-md bg-emerald-600 px-3 py-1.5 font-medium text-white hover:bg-emerald-700">
+            Свали за {prev}
+          </a>
+          <a href={`/api/admin/nap-audit?ym=${cur}`} className="rounded-md border border-neutral-300 px-3 py-1.5 hover:bg-neutral-50">
+            {cur} (текущ — само за преглед)
+          </a>
+        </p>
+      </div>
 
       <div className="rounded-lg border border-neutral-200 bg-white">
         <p className="border-b border-neutral-100 px-5 py-3 text-xs font-medium uppercase tracking-wide text-neutral-400">

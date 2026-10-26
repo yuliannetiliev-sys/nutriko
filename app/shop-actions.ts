@@ -24,6 +24,7 @@ export async function saveShopSettings(s: {
   apt: string;
   address: string;
   freeFrom: string;
+  nap: string;
 }): Promise<Result> {
   try {
     await requireAdmin();
@@ -36,6 +37,10 @@ export async function saveShopSettings(s: {
   if (s.enabled && office == null && apt == null && address == null) {
     return bad("Магазинът не може да се отвори без поне един начин на доставка с цена.");
   }
+  // Номерът от НАП (прил. № 33) влиза в QR кода на всеки документ за продажба — без него не се продава.
+  const nap = s.nap.trim().toUpperCase().replace(/\s+/g, "");
+  if (nap && !/^[A-Z]{2}\d{5,8}$/.test(nap)) return bad("Номерът от НАП изглежда така: RF1234567.");
+  if (s.enabled && !nap) return bad("Магазинът не може да се отвори без номера на е-магазина от НАП.");
   const supabase = await getDb();
   const { error } = await supabase
     .from("site_settings")
@@ -45,6 +50,7 @@ export async function saveShopSettings(s: {
       shop_shipping_apt_eur: apt,
       shop_shipping_address_eur: address,
       shop_free_shipping_from_eur: freeFrom,
+      nap_eshop_number: nap || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", 1);

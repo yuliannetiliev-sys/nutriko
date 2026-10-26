@@ -39,6 +39,12 @@ export type Order = {
   admin_note: string | null;
   /** Платена в тестовия режим на Stripe — без товарителница. */
   is_test: boolean;
+  /** Документ по чл. 52о от Н-18 — номерът се дава от базата при истинско плащане. */
+  doc_number: number | null;
+  doc_issued_at: string | null;
+  doc_token: string;
+  refunded_eur: number;
+  refunded_at: string | null;
   created_at: string;
   paid_at: string | null;
   packed_at: string | null;
@@ -76,6 +82,11 @@ function mapOrder(r: any): Order {
     waybill_id: r.waybill_id ?? null,
     admin_note: r.admin_note ?? null,
     is_test: !!r.is_test,
+    doc_number: numOrNull(r.doc_number),
+    doc_issued_at: r.doc_issued_at ?? null,
+    doc_token: r.doc_token,
+    refunded_eur: num(r.refunded_eur),
+    refunded_at: r.refunded_at ?? null,
     created_at: r.created_at,
     paid_at: r.paid_at ?? null,
     packed_at: r.packed_at ?? null,
@@ -239,10 +250,25 @@ export async function markOrderExpired(sdb: SupabaseClient, orderId: number) {
     .eq("status", "pending");
 }
 
-export async function markRefunded(sdb: SupabaseClient, paymentIntent: string) {
+/**
+ * Върнати пари (и частично) → сумата отива в одиторския файл за НАП (прил. № 38).
+ * `refundedCents` е общото върнато досега по плащането (Stripe го праща натрупано).
+ * Статусът става „върната“ само при пълно връщане.
+ */
+export async function markRefunded(
+  sdb: SupabaseClient,
+  paymentIntent: string,
+  r: { refundedCents: number; full: boolean }
+) {
+  const now = new Date().toISOString();
   await sdb
     .from("orders")
-    .update({ status: "refunded", updated_at: new Date().toISOString() })
+    .update({
+      refunded_eur: fromCents(r.refundedCents),
+      refunded_at: now,
+      ...(r.full ? { status: "refunded" } : {}),
+      updated_at: now,
+    })
     .eq("stripe_payment_intent", paymentIntent);
 }
 
@@ -250,6 +276,14 @@ export async function getOrderBySession(sessionId: string): Promise<Order | null
   const sdb = serviceDb();
   if (!sdb) return null;
   const { data } = await sdb.from("orders").select(SELECT).eq("stripe_session_id", sessionId).maybeSingle();
+  return data ? mapOrder(data) : null;
+}
+
+/** По тайния ключ на документа — за публичния документ и QR кода (без входа на клиента). */
+export async function getOrderByDocToken(token: string): Promise<Order | null> {
+  const sdb = serviceDb();
+  if (!sdb || !/^[0-9a-f-]{36}$/i.test(token)) return null;
+  const { data } = await sdb.from("orders").select(SELECT).eq("doc_token", token).maybeSingle();
   return data ? mapOrder(data) : null;
 }
 
@@ -268,6 +302,19 @@ export async function adminGetOrder(id: number): Promise<Order | null> {
   const supabase = await getDb();
   const { data } = await supabase.from("orders").select(SELECT).eq("id", id).maybeSingle();
   return data ? mapOrder(data) : null;
+}
+
+export type OrderEvent = { at: string; actor: string; action: string; details: Record<string, unknown> | null };
+
+/** Дневникът на поръчката — пише го базата (тригер), не приложението. */
+export async function adminOrderEvents(orderId: number): Promise<OrderEvent[]> {
+  const supabase = await getDb();
+  const { data } = await supabase
+    .from("order_events")
+    .select("at, actor, action, details")
+    .eq("order_id", orderId)
+    .order("at", { ascending: true });
+  return (data ?? []) as OrderEvent[];
 }
 
 export async function adminCountNewOrders(): Promise<number> {

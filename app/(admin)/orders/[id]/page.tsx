@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { adminGetOrder, deliveryLine } from "@/lib/orders";
+import { adminGetOrder, adminOrderEvents, deliveryLine } from "@/lib/orders";
+import { SALE_DOC_TITLE, docNumber, sofiaParts } from "@/lib/sale-doc";
 import { STATUS_LABEL, DELIVERY_LABEL } from "@/lib/shop-common";
 import { trackingUrl } from "@/lib/speedy";
 import { eur } from "@/lib/price";
@@ -13,7 +14,7 @@ const at = (iso: string | null) =>
 
 export default async function OrderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const o = await adminGetOrder(Number(id));
+  const [o, events] = await Promise.all([adminGetOrder(Number(id)), adminOrderEvents(Number(id))]);
   if (!o) notFound();
 
   const card = "rounded-lg border border-neutral-200 bg-white p-5";
@@ -28,6 +29,17 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         <h1 className="text-xl font-semibold">Поръчка {o.number}</h1>
         <span className="text-sm text-neutral-500">{STATUS_LABEL[o.status]}</span>
       </div>
+
+      {o.doc_number && o.doc_issued_at && (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          {SALE_DOC_TITLE} <b className="tabular-nums">№ {docNumber(o.doc_number)}</b> · {sofiaParts(o.doc_issued_at).display}{" "}
+          ·{" "}
+          <a href={`/magazin/dokument/${o.doc_token}`} target="_blank" className="underline">
+            виж
+          </a>
+          {o.refunded_eur > 0 && <> · върнати {eur(o.refunded_eur)}</>}
+        </p>
+      )}
 
       {o.is_test && (
         <p className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
@@ -112,6 +124,19 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           {o.cancelled_at && <li>Отказана: {at(o.cancelled_at)}</li>}
           {o.stripe_payment_intent && <li>Stripe: {o.stripe_payment_intent}</li>}
         </ul>
+        {events.length > 0 && (
+          <>
+            <p className={`${label} mt-4`}>Дневник (пише го базата — не се трие)</p>
+            <ul className="mt-2 space-y-0.5">
+              {events.map((e, k) => (
+                <li key={k}>
+                  {at(e.at)} · {e.actor} · {e.action}
+                  {e.details ? ` · ${Object.entries(e.details).map(([a, b]) => `${a}: ${b}`).join(", ")}` : ""}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );

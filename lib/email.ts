@@ -2,6 +2,8 @@ import { COMPANY } from "@/lib/company";
 import { eur } from "@/lib/price";
 import { DELIVERY_LABEL } from "@/lib/shop-common";
 import { deliveryLine, type Order } from "@/lib/orders";
+import { getShopSettings } from "@/lib/shop";
+import { SALE_DOC_TITLE, TAX_GROUP, PAYMENT_LABEL, SELLER_LINES, docNumber, sofiaParts } from "@/lib/sale-doc";
 
 // Изпращане на транзакционни имейли през Resend (директно през REST API, без SDK).
 // Ползва се за известяване на собственика при ново запитване от контактната форма.
@@ -116,11 +118,6 @@ async function send(body: Record<string, unknown>): Promise<{ sent: boolean; err
   }
 }
 
-const when = (iso: string | null) =>
-  iso
-    ? new Date(iso).toLocaleString("bg-BG", { timeZone: "Europe/Sofia", dateStyle: "long", timeStyle: "short" })
-    : "";
-
 function itemsTable(o: Order): string {
   const row = (l: string, r: string, strong = false) =>
     `<tr><td style="padding:6px 0;${strong ? "font-weight:600" : ""}">${l}</td>` +
@@ -147,8 +144,44 @@ const sellerBlock =
   `${COMPANY.name} · ЕИК ${COMPANY.eik}<br>${COMPANY.seat}<br>` +
   `${COMPANY.phone} · ${COMPANY.email} · ${COMPANY.site}</p>`;
 
-/** До клиента веднага след плащането. Той е и документът за поръчката от е-магазина. */
+/** Документът по чл. 52о от Н-18 — в имейла, с QR кода като картинка (Gmail не показва data: адреси). */
+function saleDocBlock(o: Order, napEshopNumber: string | null): string {
+  if (!o.doc_number || !o.doc_issued_at) {
+    return (
+      `<div style="margin:18px 0 0;padding:12px 14px;background:#fff4e5;border-radius:10px;font-size:13px">` +
+      `<b>Пробна поръчка ${o.number}</b> — платена в тестов режим, без документ за продажба.</div>`
+    );
+  }
+  const t = sofiaParts(o.doc_issued_at);
+  const td = (v: string, align = "left") => `<td style="padding:4px 6px;border-bottom:1px solid #e5e7eb;text-align:${align}">${v}</td>`;
+  const row = (name: string, qty: number, unit: number, total: number) =>
+    `<tr>${td(esc(name))}${td(TAX_GROUP, "center")}${td(String(qty), "right")}${td(eur(unit), "right")}${td(eur(total), "right")}</tr>`;
+  const rows =
+    o.items.map((i) => row(i.title, i.qty, i.unit_price_eur, i.line_total_eur)).join("") +
+    (o.shipping_eur > 0 ? row("Доставка със Спиди", 1, o.shipping_eur, o.shipping_eur) : "");
+  return (
+    `<div style="margin:18px 0 0;padding:14px;border:1px solid #d6d3cc;border-radius:10px;font-size:13px;line-height:1.5">` +
+    `<b style="font-size:14px">${SALE_DOC_TITLE} № ${docNumber(o.doc_number)}</b><br>${t.display}<br><br>` +
+    SELLER_LINES.map(esc).join("<br>") +
+    (napEshopNumber ? `<br>Електронен магазин ${COMPANY.site} · № в НАП ${esc(napEshopNumber)}` : "") +
+    `<br><br>Поръчка: <b>${o.number}</b><br>Трансакция: ${esc(o.stripe_payment_intent ?? "")}` +
+    `<table style="width:100%;border-collapse:collapse;margin:10px 0 6px;font-size:13px">` +
+    `<tr style="color:#6b7280">${td("Стока")}${td("Гр.", "center")}${td("К-во", "right")}${td("Ед. цена", "right")}${td("Стойност", "right")}</tr>` +
+    rows +
+    `</table>` +
+    `<b>Обща сума: ${eur(o.total_eur)}</b><br>Плащане: ${PAYMENT_LABEL}<br>` +
+    `<span style="color:#6b7280">Продавачът не е регистриран по ЗДДС.</span>` +
+    (napEshopNumber
+      ? `<br><img src="${SITE}/api/shop/doc-qr/${o.doc_token}" width="160" height="160" alt="QR код на документа" style="margin-top:10px">`
+      : "") +
+    `<br><a href="${SITE}/magazin/dokument/${o.doc_token}" style="color:#1f4733">Документът онлайн</a>` +
+    `</div>`
+  );
+}
+
+/** До клиента веднага след плащането. В него е и документът за продажбата (чл. 52о от Н-18). */
 export async function sendOrderConfirmation(o: Order) {
+  const { napEshopNumber } = await getShopSettings();
   const html = wrap(
     `<h2 style="margin:0 0 8px;color:#1f4733">Благодарим, ${esc(o.customer_name.split(" ")[0])}!</h2>` +
       `<p style="margin:0 0 14px">Поръчката ти е приета и платена. Изпращаме я до 1 работен ден — ` +
@@ -159,8 +192,7 @@ export async function sendOrderConfirmation(o: Order) {
       `<p style="margin:0 0 4px"><b>Плащане:</b> банкова карта, през Stripe` +
       (o.stripe_payment_intent ? ` · транзакция ${esc(o.stripe_payment_intent)}` : "") +
       `</p>` +
-      `<div style="margin:18px 0 0;padding:12px 14px;background:#f6f5f1;border-radius:10px;font-size:13px">` +
-      `<b>Документ за поръчка № ${o.number}</b><br>Електронен магазин ${COMPANY.site} · ${when(o.paid_at ?? o.created_at)}</div>` +
+      saleDocBlock(o, napEshopNumber) +
       `<p style="margin:14px 0 0;font-size:13px">Въпроси? Просто отговори на този имейл. ` +
       `<a href="${SITE}/usloviya" style="color:#1f4733">Общи условия</a> · ` +
       `<a href="${SITE}/dostavka" style="color:#1f4733">Доставка и връщане</a></p>` +

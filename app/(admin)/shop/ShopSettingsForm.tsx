@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { saveShopSettings } from "@/app/shop-actions";
 
-type S = { enabled: boolean; office: string; apt: string; address: string; freeFrom: string };
+type S = { enabled: boolean; office: string; apt: string; address: string; freeFrom: string; nap: string };
 
 export default function ShopSettingsForm({ initial }: { initial: S }) {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function ShopSettingsForm({ initial }: { initial: S }) {
           <span className="font-medium">Магазинът е отворен</span>
           <span className="block text-xs text-neutral-500">
             Изключен: страниците показват „скоро“, поръчка не може да се направи. Включи го чак след
-            регистрацията в БАБХ и декларирането в НАП.
+            регистрацията в БАБХ и в НАП (Приложение № 33) — без номера от НАП не се включва.
           </span>
         </span>
       </label>
@@ -81,6 +81,14 @@ export default function ShopSettingsForm({ initial }: { initial: S }) {
       <p className="mt-1 text-[11px] text-neutral-400">
         „Безплатна от“ е сумата на артикулите, над която доставката е 0 — напр. 2 кутии.
       </p>
+
+      <div className="mt-5 max-w-xs">
+        <label className={label}>Номер на е-магазина от НАП</label>
+        <input className={input} placeholder="RF1234567" value={v.nap} onChange={(e) => set("nap", e.target.value)} />
+        <p className="mt-1 text-[11px] text-neutral-400">
+          Получаваш го след подаване на Приложение № 33. Влиза в QR кода на всеки документ за продажба.
+        </p>
+      </div>
 
       <div className="mt-4 flex items-center gap-3">
         <button

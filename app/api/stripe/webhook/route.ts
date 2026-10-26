@@ -69,9 +69,9 @@ export async function POST(request: Request) {
   }
 
   if (event.type === "charge.refunded") {
-    // Само при пълно възстановяване — частичното не сменя статуса.
-    if (obj.refunded === true && typeof obj.payment_intent === "string") {
-      await markRefunded(sdb, obj.payment_intent);
+    // И частичното връщане се записва (за одиторския файл); статусът се сменя само при пълно.
+    if (typeof obj.payment_intent === "string" && typeof obj.amount_refunded === "number") {
+      await markRefunded(sdb, obj.payment_intent, { refundedCents: obj.amount_refunded, full: obj.refunded === true });
     }
     return ok();
   }
