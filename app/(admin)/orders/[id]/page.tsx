@@ -27,7 +27,10 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
       </Link>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="text-xl font-semibold">Поръчка {o.number}</h1>
-        <span className="text-sm text-neutral-500">{STATUS_LABEL[o.status]}</span>
+        <span className="text-sm text-neutral-500">
+          {STATUS_LABEL[o.status]}
+          {o.batch_label && <> · партида {o.batch_label}</>}
+        </span>
       </div>
 
       {o.doc_number && o.doc_issued_at && (
@@ -111,7 +114,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
-      <OrderActions id={o.id} status={o.status} hasWaybill={!!o.waybill_id} isTest={o.is_test} note={o.admin_note ?? ""} />
+      <OrderActions id={o.id} status={o.status} hasWaybill={!!o.waybill_id} isTest={o.is_test} note={o.admin_note ?? ""} batch={o.batch_label ?? ""} />
 
       <div className={`${card} text-xs text-neutral-500`}>
         <p className={label}>История</p>

@@ -45,6 +45,8 @@ export type Order = {
   doc_token: string;
   refunded_eur: number;
   refunded_at: string | null;
+  /** Партида на изпратените кутии = „Най-добър до“ от етикета; попълва се при опаковане. */
+  batch_label: string | null;
   created_at: string;
   paid_at: string | null;
   packed_at: string | null;
@@ -87,6 +89,7 @@ function mapOrder(r: any): Order {
     doc_token: r.doc_token,
     refunded_eur: num(r.refunded_eur),
     refunded_at: r.refunded_at ?? null,
+    batch_label: r.batch_label ?? null,
     created_at: r.created_at,
     paid_at: r.paid_at ?? null,
     packed_at: r.packed_at ?? null,
@@ -289,10 +292,12 @@ export async function getOrderByDocToken(token: string): Promise<Order | null> {
 
 // ── Админ (през сесията — RLS пуска само админите) ─────────────────────────
 
-export async function adminListOrders(filter: "active" | "all" | OrderStatus = "active"): Promise<Order[]> {
+export async function adminListOrders(filter: "active" | "all" | OrderStatus = "active", batch?: string): Promise<Order[]> {
   const supabase = await getDb();
   let q = supabase.from("orders").select(SELECT).order("created_at", { ascending: false }).limit(300);
-  if (filter === "active") q = q.in("status", ["paid", "packed"]);
+  // Търсене по партида (при изтегляне на продукт) — във всички статуси.
+  if (batch) q = q.ilike("batch_label", `%${batch.replace(/[%_,()]/g, " ").trim()}%`);
+  else if (filter === "active") q = q.in("status", ["paid", "packed"]);
   else if (filter !== "all") q = q.eq("status", filter);
   const { data } = await q;
   return (data ?? []).map(mapOrder);

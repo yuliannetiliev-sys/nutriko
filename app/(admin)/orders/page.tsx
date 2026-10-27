@@ -27,10 +27,11 @@ const BADGE: Record<OrderStatus, string> = {
 const short = (iso: string) =>
   new Date(iso).toLocaleString("bg-BG", { timeZone: "Europe/Sofia", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 
-export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ f?: string }> }) {
-  const { f = "active" } = await searchParams;
+export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ f?: string; partida?: string }> }) {
+  const { f = "active", partida = "" } = await searchParams;
   const filter = FILTERS.some(([k]) => k === f) ? f : "active";
-  const orders = await adminListOrders(filter as never);
+  const batch = partida.trim().slice(0, 40);
+  const orders = await adminListOrders(filter as never, batch || undefined);
 
   return (
     <div>
@@ -41,13 +42,29 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         </Link>
       </div>
 
+      {/* При изтегляне на партида: всички поръчки с нея — до кого е стигнала. */}
+      <form action="/orders" className="mb-3 flex flex-wrap items-center gap-2 text-sm">
+        <input
+          name="partida"
+          defaultValue={batch}
+          placeholder="Търси по партида („Най-добър до“), напр. 15.03.2027"
+          className="h-9 w-80 max-w-full rounded-md border border-neutral-300 px-2"
+        />
+        <button className="h-9 rounded-md border border-neutral-300 px-3 hover:bg-neutral-50">Търси</button>
+        {batch && (
+          <Link href="/orders" className="text-neutral-500 hover:text-neutral-900">
+            × изчисти
+          </Link>
+        )}
+      </form>
+
       <div className="mb-4 flex flex-wrap gap-1.5">
         {FILTERS.map(([k, label]) => (
           <Link
             key={k}
             href={`/orders?f=${k}`}
             className={`rounded-full px-3 py-1 text-sm ${
-              filter === k ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+              filter === k && !batch ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
             }`}
           >
             {label}
@@ -57,7 +74,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
 
       {orders.length === 0 ? (
         <p className="rounded-lg border border-dashed border-neutral-300 p-8 text-center text-sm text-neutral-400">
-          {filter === "active" ? "Няма поръчки за изпълнение." : "Няма поръчки тук."}
+          {batch ? `Няма поръчки с партида „${batch}“.` : filter === "active" ? "Няма поръчки за изпълнение." : "Няма поръчки тук."}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-neutral-200 bg-white">
@@ -69,6 +86,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                 <th className="px-3 py-2">Клиент</th>
                 <th className="px-3 py-2">Какво</th>
                 <th className="px-3 py-2">Доставка</th>
+                <th className="px-3 py-2">Партида</th>
                 <th className="px-3 py-2 text-right">Общо</th>
                 <th className="px-3 py-2">Статус</th>
               </tr>
@@ -90,6 +108,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                     {DELIVERY_LABEL[o.delivery_type]}
                     {o.city_name ? ` · ${o.city_name}` : ""}
                   </td>
+                  <td className="whitespace-nowrap px-3 py-2 text-neutral-500">{o.batch_label ?? "—"}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{eur(o.total_eur)}</td>
                   <td className="px-3 py-2">
                     <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${BADGE[o.status]}`}>

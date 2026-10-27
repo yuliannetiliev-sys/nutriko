@@ -154,11 +154,43 @@ const STAMP: Partial<Record<OrderStatus, string>> = {
   cancelled: "cancelled_at",
 };
 
+/** Без партида кутия не тръгва — иначе при изтегляне не се знае до кого е стигнала. */
+async function needsBatch(id: number): Promise<string | null> {
+  const supabase = await getDb();
+  const { data } = await supabase.from("orders").select("batch_label, is_test").eq("id", id).maybeSingle();
+  if (!data) return "Поръчката не е намерена.";
+  if (!data.is_test && !String(data.batch_label ?? "").trim()) {
+    return "Първо запиши партидата (датата „Най-добър до“ от етикета на кутиите).";
+  }
+  return null;
+}
+
+export async function saveOrderBatch(id: number, batch: string): Promise<Result> {
+  try {
+    await requireAdmin();
+  } catch {
+    return bad("Няма достъп.");
+  }
+  const value = batch.trim().replace(/\s+/g, " ").slice(0, 80);
+  const supabase = await getDb();
+  const { error } = await supabase
+    .from("orders")
+    .update({ batch_label: value || null, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) return bad(error.message);
+  revalidatePath("/orders");
+  return { ok: true };
+}
+
 export async function setOrderStatus(id: number, status: OrderStatus): Promise<Result> {
   try {
     await requireAdmin();
   } catch {
     return bad("Няма достъп.");
+  }
+  if (status === "packed" || status === "shipped") {
+    const missing = await needsBatch(id);
+    if (missing) return bad(missing);
   }
   const supabase = await getDb();
   const stamp = STAMP[status];
@@ -199,6 +231,9 @@ export async function createOrderWaybill(id: number): Promise<Result & { waybill
   if (!speedyConfigured()) return bad("Спиди не е настроен (SPEEDY_USER / SPEEDY_PASS във Vercel).");
   const order = await adminGetOrder(id);
   if (!order) return bad("Поръчката не е намерена.");
+  if (!order.is_test && !order.batch_label?.trim()) {
+    return bad("Първо запиши партидата (датата „Най-добър до“ от етикета на кутиите).");
+  }
   if (order.is_test) {
     return bad("Пробна поръчка (тестов режим на Stripe) — товарителница не се прави: при Спиди всяка е истинска пратка.");
   }
