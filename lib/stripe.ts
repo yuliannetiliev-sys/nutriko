@@ -50,9 +50,11 @@ export type CheckoutInput = {
 export async function createCheckoutSession(o: CheckoutInput) {
   const p = new URLSearchParams();
   p.set("mode", "payment");
-  // Само карта: тя минава веднага. Apple Pay и Google Pay вървят като карта.
-  // Отложени методи (преводи) биха оставили поръчката „платена" по-късно.
-  p.set("payment_method_types[0]", "card");
+  // Само карта: тя минава веднага (Apple Pay и Google Pay вървят като карта), а и алтернативният
+  // режим на Н-18 (чл. 3, ал. 17) допуска само неприсъствено плащане с карта. От API 2026-09-30
+  // `payment_method_types` е премахнат — `allowed_payment_method_types` филтрира включените в таблото
+  // методи, така че Klarna, преводи и др. няма да се появят, дори да бъдат включени там.
+  p.set("allowed_payment_method_types[0]", "card");
   p.set("locale", "bg");
   p.set("customer_email", o.email);
   p.set("client_reference_id", o.orderNumber);
