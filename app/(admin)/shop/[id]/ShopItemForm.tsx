@@ -1,19 +1,30 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { saveShopItem, type ShopItemPayload } from "@/app/shop-actions";
 import { uploadProductImage } from "@/app/actions";
 import { compressImage } from "@/lib/compressImage";
-import type { ShopItem } from "@/lib/shop";
+import type { RecipeCost, ShopItem } from "@/lib/shop";
 
 const s = (v: number | null | undefined) => (v == null ? "" : String(v));
+const n = (x: string) => {
+  const v = Number(x.replace(",", "."));
+  return x.trim() !== "" && Number.isFinite(v) ? v : null;
+};
+const eur = (x: number) => `€${x.toFixed(2)}`;
 
-export default function ShopItemForm({ item }: { item: ShopItem }) {
+// Тарифата на Stripe за България, карти от ЕИП (stripe.com/en-bg/pricing, 28.10.2026).
+const STRIPE_PCT = 0.015;
+const STRIPE_FIX = 0.25;
+
+export default function ShopItemForm({ item, recipe }: { item: ShopItem; recipe: RecipeCost | null }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [mult, setMult] = useState("3");
   const [v, setV] = useState<ShopItemPayload>({
     title: item.title,
     subtitle: item.subtitle ?? "",
@@ -21,6 +32,7 @@ export default function ShopItemForm({ item }: { item: ShopItem }) {
     units_per_pack: s(item.units_per_pack),
     net_weight_g: s(item.net_weight_g),
     price_eur: s(item.price_eur),
+    pack_cost_eur: s(item.pack_cost_eur),
     description: item.description ?? "",
     ingredients_text: item.ingredients_text ?? "",
     allergens_text: item.allergens_text ?? "",
@@ -115,6 +127,95 @@ export default function ShopItemForm({ item }: { item: ShopItem }) {
           {field("stock_qty", "Наличност", "без ограничение")}
           {field("shelf_life_days", "Срок на годност (дни)", "за етикета")}
         </div>
+      </div>
+
+      <div className={card}>
+        <p className={head}>Калкулация на онлайн цената</p>
+        {(() => {
+          // Съдържанието на кутията = себестойността на рецептата, сметната за нетото на кутията.
+          const net = n(v.net_weight_g) ?? 0;
+          const contents = recipe ? (recipe.costEur / recipe.grams) * net : null;
+          const pack = n(v.pack_cost_eur) ?? 0;
+          const base = contents != null ? contents + pack : null;
+          const price = n(v.price_eur);
+          const fee = price != null ? price * STRIPE_PCT + STRIPE_FIX : null;
+          const profit = price != null && base != null && fee != null ? price - base - fee : null;
+          const k = n(mult);
+          const byMult = base != null && k ? Math.ceil(base * k * 2) / 2 : null; // до 0,50 €
+          const row = "flex justify-between gap-3 border-b border-neutral-100 py-1.5 text-sm last:border-0";
+          return (
+            <div className="space-y-3">
+              {recipe ? (
+                <p className="text-sm text-neutral-600">
+                  Рецепта:{" "}
+                  <Link href={`/products/${recipe.productId}`} className="text-emerald-700 hover:underline">
+                    {recipe.name}
+                  </Link>{" "}
+                  — {recipe.grams} г за {eur(recipe.costEur)} ({eur((recipe.costEur / recipe.grams) * 100)} / 100 г)
+                  {!recipe.complete && <span className="text-amber-600"> · непълна — съставка без цена</span>}
+                  <span className="block text-xs text-neutral-400">
+                    {recipe.published
+                      ? "Продуктът е и в менюто — там е с цена на парче; цената тук е отделна и важи само за магазина."
+                      : "Продуктът е скрит от менюто — вижда се само тук и в админа."}
+                  </span>
+                </p>
+              ) : (
+                <p className="text-sm text-amber-700">Артикулът не е вързан с продукт от менюто — няма рецепта за сметка.</p>
+              )}
+              <div className="grid gap-3 sm:grid-cols-4">
+                {field("pack_cost_eur", "Опаковка на кутия (€)", "кутия, етикет, кашон")}
+                <div>
+                  <label className={label}>Множител за подсказка</label>
+                  <input className={input} inputMode="decimal" value={mult} onChange={(e) => setMult(e.target.value)} />
+                </div>
+              </div>
+              {base != null && (
+                <div className="rounded-md bg-neutral-50 px-3 py-1">
+                  <div className={row}>
+                    <span>Съдържание ({net} г)</span>
+                    <span className="tabular-nums">{eur(contents ?? 0)}</span>
+                  </div>
+                  <div className={row}>
+                    <span>Опаковка</span>
+                    <span className="tabular-nums">{eur(pack)}</span>
+                  </div>
+                  <div className={`${row} font-medium`}>
+                    <span>Себестойност на кутия</span>
+                    <span className="tabular-nums">{eur(base)}</span>
+                  </div>
+                  {price != null && fee != null && profit != null && (
+                    <>
+                      <div className={row}>
+                        <span>Такса Stripe при {eur(price)} (1,5 % + €0,25)</span>
+                        <span className="tabular-nums">{eur(fee)}</span>
+                      </div>
+                      <div className={`${row} font-medium ${profit < 0 ? "text-red-600" : "text-emerald-700"}`}>
+                        <span>Печалба на кутия</span>
+                        <span className="tabular-nums">
+                          {eur(profit)} · {price > 0 ? Math.round((profit / price) * 100) : 0} % · ×{(price / base).toFixed(2)}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {byMult != null && (
+                    <div className={row}>
+                      <span>Цена при множител ×{k}</span>
+                      <span className="flex items-center gap-2 tabular-nums">
+                        {eur(byMult)}
+                        <button onClick={() => set("price_eur", byMult.toFixed(2))} className="text-xs text-emerald-700 hover:underline">
+                          сложи
+                        </button>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+              <p className="text-[11px] text-neutral-400">
+                Доставката я плаща клиентът отделно и не влиза тук. Премиум картите и картите извън ЕИП струват повече (до 3,15 % + €0,25).
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       <div className={card}>

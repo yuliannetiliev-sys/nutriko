@@ -67,6 +67,7 @@ export type ShopItemPayload = {
   units_per_pack: string;
   net_weight_g: string;
   price_eur: string;
+  pack_cost_eur: string;
   description: string;
   ingredients_text: string;
   allergens_text: string;
@@ -103,6 +104,8 @@ export async function saveShopItem(id: number, p: ShopItemPayload): Promise<Resu
   const price = money(p.price_eur);
   if (Number.isNaN(price)) return bad("Цената трябва да е число.");
   if (p.is_active && price == null) return bad("Без цена артикулът не може да е активен.");
+  const packCost = money(p.pack_cost_eur);
+  if (Number.isNaN(packCost)) return bad("Цената на опаковката трябва да е число.");
   if (!p.title.trim() || !p.pack_label.trim()) return bad("Заглавието и опаковката са задължителни.");
   const net = int(p.net_weight_g);
   if (!net || net <= 0) return bad("Нето масата е задължителна.");
@@ -125,6 +128,7 @@ export async function saveShopItem(id: number, p: ShopItemPayload): Promise<Resu
       units_per_pack: int(p.units_per_pack) ?? 1,
       net_weight_g: net,
       price_eur: price,
+      pack_cost_eur: packCost,
       description: p.description.trim() || null,
       ingredients_text: p.ingredients_text.trim() || null,
       allergens_text: p.allergens_text.trim() || null,

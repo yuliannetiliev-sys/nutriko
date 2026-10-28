@@ -46,6 +46,17 @@ export type ShopItem = {
   max_per_order: number;
   is_active: boolean;
   sort_order: number | null;
+  pack_cost_eur: number | null;
+};
+
+/** Рецептата на вързания продукт — за калкулацията на онлайн цената (само в админа). */
+export type RecipeCost = {
+  productId: number;
+  name: string;
+  published: boolean;
+  grams: number;
+  costEur: number;
+  complete: boolean;
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -88,6 +99,7 @@ export function mapShopItem(r: any): ShopItem {
     max_per_order: num(r.max_per_order) || 5,
     is_active: !!r.is_active,
     sort_order: numOrNull(r.sort_order),
+    pack_cost_eur: numOrNull(r.pack_cost_eur),
   };
 }
 
@@ -222,4 +234,24 @@ export async function adminGetShopItem(id: number): Promise<ShopItem | null> {
   const supabase = await getDb();
   const { data } = await supabase.from("shop_items").select("*").eq("id", id).maybeSingle();
   return data ? mapShopItem(data) : null;
+}
+
+/** Себестойността на рецептата от product_costs_v — същата сметка като в редактора на продукта. */
+export async function adminRecipeCost(productId: number | null): Promise<RecipeCost | null> {
+  if (productId == null) return null;
+  const supabase = await getDb();
+  const { data } = await supabase
+    .from("product_costs_v")
+    .select("product_id, name, is_published, basis_weight_g, total_cost_eur, cost_complete")
+    .eq("product_id", productId)
+    .maybeSingle();
+  if (!data || !num(data.basis_weight_g)) return null;
+  return {
+    productId,
+    name: data.name,
+    published: !!data.is_published,
+    grams: num(data.basis_weight_g),
+    costEur: num(data.total_cost_eur),
+    complete: !!data.cost_complete,
+  };
 }

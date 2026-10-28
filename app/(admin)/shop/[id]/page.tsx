@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { adminGetShopItem } from "@/lib/shop";
+import { adminGetShopItem, adminRecipeCost } from "@/lib/shop";
 import ShopItemForm from "./ShopItemForm";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +9,7 @@ export default async function ShopItemPage({ params }: { params: Promise<{ id: s
   const { id } = await params;
   const item = await adminGetShopItem(Number(id));
   if (!item) notFound();
+  const recipe = await adminRecipeCost(item.product_id);
 
   return (
     <div className="space-y-4">
@@ -21,7 +22,7 @@ export default async function ShopItemPage({ params }: { params: Promise<{ id: s
         </Link>
       </div>
       <h1 className="text-xl font-semibold">{item.title}</h1>
-      <ShopItemForm item={item} />
+      <ShopItemForm item={item} recipe={recipe} />
     </div>
   );
 }
