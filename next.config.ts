@@ -27,6 +27,22 @@ const nextConfig: NextConfig = {
     // Миниатюрите в менюто и галерията са между 56 и 384 px
     imageSizes: [64, 96, 128, 256, 384],
   },
+  // Късите адреси от отпечатаните QR кодове в заведението (пирамидката).
+  // Отпечатаното не може да се смени, затова кодът сочи тук, а не направо
+  // към Google/Facebook — ако някой линк се промени, се сменя само този ред.
+  // 307 (permanent: false), за да не го запомнят телефоните завинаги.
+  async redirects() {
+    return [
+      {
+        source: "/qr/google",
+        destination: "https://search.google.com/local/writereview?placeid=ChIJZdjQfjlFr0AR59GacvnJYs8",
+        permanent: false,
+      },
+      { source: "/qr/facebook", destination: "https://www.facebook.com/nutrikobg", permanent: false },
+      { source: "/qr/instagram", destination: "https://www.instagram.com/nutrikobg/", permanent: false },
+      { source: "/qr/menu", destination: "/menu?utm_source=qr&utm_medium=masa", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
