@@ -86,6 +86,11 @@ export default async function PublicLayout({
                 </Link>
               </li>
               <li>
+                <Link href="/bez-gluten" className="hover:text-white">
+                  Без глутен
+                </Link>
+              </li>
+              <li>
                 <Link href="/polezno" className="hover:text-white">
                   Полезно
                 </Link>

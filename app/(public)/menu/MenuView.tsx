@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { MenuItem } from "@/lib/data";
@@ -10,7 +10,41 @@ import { hasProductPage, productHref } from "@/lib/links";
 
 type Group = { key: string; label: string; description?: string | null; items: MenuItem[] };
 
+/**
+ * Филтърът е по ЕТИКЕТ, не по категория.
+ *
+ * ЗАЩО: човек, който не яде глутен, не мисли „торти, после вафли" — иска да
+ * види своите наведнъж. От разговорите с клиенти (29.10) водещите доводи са
+ * „без захар" и „без глутен", а веганското е новото търсене. Категориите
+ * остават за разглеждане, етикетите — за избор.
+ *
+ * Етикетите идват от базата (`products.tags`), затова тук стои само кои се
+ * показват като бутони и в какъв ред.
+ */
+const FILTRI = ["без захар", "без глутен", "веган"] as const;
+
+const ima = (m: MenuItem, tag: string) =>
+  m.tags.some((t) => t.trim().toLowerCase() === tag);
+
 export default function MenuView({ groups }: { groups: Group[] }) {
+  const [filtar, setFiltar] = useState<string | null>(null);
+
+  // Показват се само филтрите, за които наистина има продукти — иначе бутон
+  // „веган" би връщал празен списък, ако веганското свърши.
+  const broy = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const t of FILTRI)
+      out[t] = groups.reduce((n, g) => n + g.items.filter((m) => ima(m, t)).length, 0);
+    return out;
+  }, [groups]);
+
+  const vidimi = useMemo(() => {
+    if (!filtar) return groups;
+    return groups
+      .map((g) => ({ ...g, items: g.items.filter((m) => ima(m, filtar)) }))
+      .filter((g) => g.items.length > 0);
+  }, [groups, filtar]);
+
   const [active, setActive] = useState(groups[0]?.key ?? "");
   const [open, setOpen] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(groups.map((g, i) => [g.key, i === 0]))
@@ -33,15 +67,57 @@ export default function MenuView({ groups }: { groups: Group[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lb]);
 
-  const activeGroup = groups.find((g) => g.key === active) ?? groups[0];
+  // При включен филтър избраната категория може да е празна → пада на първата с резултати.
+  const activeGroup = vidimi.find((g) => g.key === active) ?? vidimi[0];
+
+  const chip =
+    "rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none " +
+    "focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2";
 
   return (
     <div className="mt-12">
+      <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={() => setFiltar(null)}
+          aria-pressed={filtar === null}
+          className={`${chip} ${
+            filtar === null
+              ? "border-brand bg-brand text-cream"
+              : "border-ink/15 bg-white text-ink/75 hover:border-brand/40"
+          }`}
+        >
+          Всичко
+        </button>
+        {FILTRI.filter((t) => broy[t] > 0).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setFiltar(filtar === t ? null : t)}
+            aria-pressed={filtar === t}
+            className={`${chip} ${
+              filtar === t
+                ? "border-brand bg-brand text-cream"
+                : "border-ink/15 bg-white text-ink/75 hover:border-brand/40"
+            }`}
+          >
+            {t}
+            <span className={`ml-1.5 text-xs ${filtar === t ? "text-cream/70" : "text-muted/70"}`}>
+              {broy[t]}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {filtar && vidimi.length === 0 && (
+        <p className="py-10 text-center text-muted">Няма продукти с „{filtar}“ в момента.</p>
+      )}
+
       {/* ===== ДЕСКТОП: страничен филтър — показва само избраната категория ===== */}
       <div className="hidden lg:grid lg:grid-cols-[210px_1fr] lg:gap-12">
         <aside>
           <nav className="sticky top-24 space-y-1.5">
-            {groups.map((g) => {
+            {vidimi.map((g) => {
               const on = g.key === activeGroup?.key;
               return (
                 <button
@@ -87,7 +163,7 @@ export default function MenuView({ groups }: { groups: Group[] }) {
 
       {/* ===== МОБИЛЕН: хармоника с ясни бутони-карти ===== */}
       <div className="space-y-3 lg:hidden">
-        {groups.map((g) => {
+        {vidimi.map((g) => {
           const isOpen = open[g.key] ?? false;
           return (
             <section key={g.key} className="overflow-hidden rounded-2xl border border-ink/10 bg-white/70">
