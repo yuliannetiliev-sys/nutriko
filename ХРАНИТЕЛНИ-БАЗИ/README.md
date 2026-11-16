@@ -105,6 +105,9 @@
 
 CSV-ът носи и двете колони (`carbohydrate_net_g` и `carbohydrate_total_g`), плюс
 `sugar_alcohol_g`, за да може да се избере според полето на всяко приложение.
+От 16.11 същото е и на 100 г: `carbohydrate_net_per_100_g`,
+`sugar_alcohol_per_100_g`, `carbohydrate_total_per_100_g`. Причината е, че
+FatSecret може да иска стойностите на 100 г.
 Плюс `mfp_description` и `mfp_serving_unit` — готовите описание и мярка за
 MyFitnessPal.
 
@@ -171,9 +174,10 @@ MyFitnessPal.
 
 1. ✅ Въглехидратите — решено 14.11: в приложенията нето (виж по-горе).
 2. ✅ Регистрация във FatSecret Brand Tools — 14.11. Отговор на сайта: „One of
-   our consultants will be contacting you in the near future.“ ⏳ Когато пишат —
-   отговор с писмото. Ако до 21.11 няма нищо — писмото през Contact (напомнянето е
-   в календара).
+   our consultants will be contacting you in the near future.“ **16.11 отговориха**
+   (api-support@fatsecret.com): питат коя марка, в кои държави и данните на фирмата.
+   Отговорът е чернова в Gmail в същата нишка: съкратеното писмо с 4 въпроса.
+   Изпраща се от info@nutriko.fit след „да“ от собственика.
 3. ✅ MyFitnessPal — **28 от 29 въведени на 14.11**, публично (чакат преглед
    от MFP). Отбелязани в `podadeno.json`. Бадем и Фъстък Бар (до 14.11
    „Сникърс“) е въведен под новото име. Не е въведен само **Веган Солен
