@@ -92,6 +92,10 @@ const redove = menu
   .map(m => {
     const porcii = Number(m.servings) || 1;
     const gram = Number(m.serving_weight_g);
+    // Грамажът в менюто е закръглен надолу нарочно (собственикът, 17.11: „закръглям малко на долу“),
+    // а макросите на порция са за реалното средно парче (рецепта ÷ порции). Сметките „на 100 г“
+    // се правят с реалното парче, изведено от kcal на порция ÷ kcal на 100 г.
+    const realGram = Number(m.kcal_100g) > 0 ? Number(m.kcal_serving) / Number(m.kcal_100g) * 100 : gram;
     const pid = idBySlug.get(m.slug);
     const eritCialo = eritritolPoProdukt.get(pid) ?? 0;
     const eritPorcia = eritCialo / porcii;
@@ -116,8 +120,8 @@ const redove = menu
       kcal100: r1(m.kcal_100g),
       protein100: r1(m.protein_100g),
       vugl100: r1(m.carbs_100g),
-      eritritol100: r1(gram ? eritPorcia / gram * 100 : 0),
-      vuglObshto100: r1(Number(m.carbs_100g) + (gram ? eritPorcia / gram * 100 : 0)),
+      eritritol100: r1(realGram ? eritPorcia / realGram * 100 : 0),
+      vuglObshto100: r1(Number(m.carbs_100g) + (realGram ? eritPorcia / realGram * 100 : 0)),
       mazniny100: r1(m.fat_100g),
       gi: m.gi_estimate ?? null,
       gt: m.gl_serving ?? null,
@@ -126,7 +130,7 @@ const redove = menu
       sustav: (m.description ?? '').replace(/\s+/g, ' ').trim(),
       etiketi: (m.tags ?? []).join(', '),
       porcii,
-      cialoTeglo: r0(gram * porcii),
+      cialoTeglo: r0(realGram * porcii),
       stranica: `https://nutriko.fit/menu/${m.slug}`,
       belezhka: m.carbs_note ?? '',
       mfpIme: imeMFP(m.category, m.name, NASHE[m.category](r0(gram)), r1(eritPorcia)),
