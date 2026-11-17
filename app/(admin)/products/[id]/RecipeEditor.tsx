@@ -211,6 +211,18 @@ export default function RecipeEditor({
     [rows, servings, finishedWeight, multiplier, sellPrice, purchasePrice, wholePrice]
   );
 
+  // Съставки без хранителни стойности се смятат като 0 — тогава „на 100 g“ пада, а „на порция“ не мърда.
+  // Водата и кафето са съзнателно празни, затова се показват само съставки с поне 1 g в рецептата и без нито едно число.
+  const noMacros = useMemo(() => {
+    const names = new Set<string>();
+    for (const r of rows) {
+      const i = r.ingredient;
+      const empty = i.kcal_100 == null && i.protein_100 == null && i.carbs_100 == null && i.fat_100 == null;
+      if (empty && unitToGrams(r.qty, i) > 0 && !/^вода$|кафе/i.test(i.name.trim())) names.add(i.name);
+    }
+    return [...names];
+  }, [rows]);
+
   // Откъде идват въглехидратите — за да е вярно пояснението, което клиентът чете.
   // Една съставка може да е в няколко секции, затова се събира по съставка.
   const carbSources = useMemo(() => {
@@ -1013,6 +1025,12 @@ export default function RecipeEditor({
 
           <div className="rounded-lg border border-neutral-200 bg-white p-4">
             <h2 className="mb-3 font-medium">Макроси</h2>
+            {noMacros.length > 0 && (
+              <p className="mb-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                ⚠️ Без хранителни стойности: <b>{noMacros.join(", ")}</b>. Смята се като 0 — макросите са по-ниски от
+                истинските. Попълни ги в „Съставки“.
+              </p>
+            )}
             <p className="mb-1 text-xs uppercase tracking-wide text-neutral-400">на 100 g</p>
             <MacroRow t={totals.per100} />
             <p className="mb-1 mt-3 text-xs uppercase tracking-wide text-neutral-400">
