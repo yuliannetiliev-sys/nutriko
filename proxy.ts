@@ -33,10 +33,20 @@ export async function proxy(req: NextRequest) {
 
   const path = req.nextUrl.pathname;
   const needsAdmin = ADMIN_PATHS.some((p) => path === p || path.startsWith(p + "/"));
+  // Планерът на тортите: всеки влязъл; кой е служител, проверява app/planer/layout.tsx (+ RLS).
+  const planner = path === "/planer" || path.startsWith("/planer/");
 
-  if (needsAdmin && (!user?.email || !ADMIN_EMAILS.includes(user.email))) {
+  if ((needsAdmin || planner) && !user) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Влязъл, но не админ (служител) → само до планера, без другите страници на админа.
+  if (needsAdmin && (!user?.email || !ADMIN_EMAILS.includes(user.email))) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/planer";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

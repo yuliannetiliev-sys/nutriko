@@ -31,6 +31,7 @@ export default async function AdminLayout({
               )}
             </Link>
             <Link href="/shop" className="hover:text-neutral-900">Магазин</Link>
+            <Link href="/planer" className="hover:text-neutral-900">Планер</Link>
           </nav>
           <div className="ml-auto flex items-center gap-3 text-sm">
             <Link href="/" className="text-neutral-400 hover:text-neutral-900">Виж сайта →</Link>

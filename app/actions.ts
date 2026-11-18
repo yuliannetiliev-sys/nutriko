@@ -1,6 +1,6 @@
 "use server";
 
-import { db, getDb, requireAdmin } from "@/lib/supabase";
+import { ADMIN_EMAILS, db, getDb, requireAdmin } from "@/lib/supabase";
 import { slugify, uniqueSlug } from "@/lib/slug";
 import { sendContactNotification } from "@/lib/email";
 import { revalidatePath } from "next/cache";
@@ -14,9 +14,13 @@ export async function signIn(_prev: { error?: string } | null, formData: FormDat
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const supabase = await getDb();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "Грешен имейл или парола." };
-  redirect("/products");
+  if (data.user?.email && ADMIN_EMAILS.includes(data.user.email)) redirect("/products");
+  // Служителите (профил от касата, таблица `staff`) влизат само в планера на тортите;
+  // кухнята отива направо на своя екран.
+  const { data: st } = await supabase.from("staff").select("role").eq("user_id", data.user.id).maybeSingle();
+  redirect(st?.role === "kitchen" ? "/planer/kuhnya" : "/planer");
 }
 
 export async function signOut() {
