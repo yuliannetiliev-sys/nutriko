@@ -16,14 +16,16 @@ function sumLine(rows: KitchenRow[]) {
 export default function KitchenView({
   days,
   check,
+  manualCheck = false,
 }: {
   days: { date: string; rows: KitchenRow[] }[];
   check: StaffCheck | null;
+  manualCheck?: boolean;
 }) {
   return (
     <div>
       {/* Проверка преди работа (Прил. 72) — само напомня, не спира работата. */}
-      {check && <Proverka check={check} />}
+      {check && <Proverka check={check} manual={manualCheck} />}
 
       <div className="space-y-6">
         {days.map(({ date, rows }, i) => {

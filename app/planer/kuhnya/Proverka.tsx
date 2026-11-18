@@ -38,7 +38,9 @@ function BookLine({ c }: { c: StaffCheck }) {
   }
 }
 
-export default function Proverka({ check }: { check: StaffCheck }) {
+// `manual` = собственикът (роля owner): без червена лента, само бутон „Проверка преди работа“ —
+// отмята, когато работи с храна (решение 18.11: „Само когато работя“). Записът е като на всички.
+export default function Proverka({ check, manual = false }: { check: StaffCheck; manual?: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [healthOk, setHealthOk] = useState(true);
@@ -85,15 +87,26 @@ export default function Proverka({ check }: { check: StaffCheck }) {
 
   return (
     <>
-      <div className="mb-4 rounded-xl bg-red-600 p-3 text-white">
-        <p className="text-base font-semibold">Проверката преди работа за днес не е отметната.</p>
-        <button
-          onClick={() => setOpen(true)}
-          className="mt-2 h-12 w-full rounded-lg bg-white text-base font-semibold text-red-700 active:bg-red-50"
-        >
-          Отметни сега
-        </button>
-      </div>
+      {manual ? (
+        <div className="mb-4 flex justify-end">
+          <button
+            onClick={() => setOpen(true)}
+            className="h-11 rounded-lg border border-neutral-300 bg-white px-4 text-base font-medium text-neutral-800 active:bg-neutral-100"
+          >
+            Проверка преди работа
+          </button>
+        </div>
+      ) : (
+        <div className="mb-4 rounded-xl bg-red-600 p-3 text-white">
+          <p className="text-base font-semibold">Проверката преди работа за днес не е отметната.</p>
+          <button
+            onClick={() => setOpen(true)}
+            className="mt-2 h-12 w-full rounded-lg bg-white text-base font-semibold text-red-700 active:bg-red-50"
+          >
+            Отметни сега
+          </button>
+        </div>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" role="dialog" aria-modal="true">
